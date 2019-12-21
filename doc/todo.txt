@@ -1,5 +1,10 @@
 version 0.1
-
+In this version, head can work with single files 
+  - a single file given as argument : it will give first 10 lines of that file
+      Command: node head.js [filename]
+  - a single given with "-n" option along with a line count: it will that much number of lines from start.
+      Command: node head.js -n [line count] [filename]
+    
 1 Create following folders
   -> src/
   -> test/
@@ -17,8 +22,6 @@ version 0.1
   -> appTests/
      |- req_single_file.test
      |- req_single_file_with_-n.test
-     |- req_no_file.test
-     |- req_no_file_with_-n.test
 
 3 Link head.js with testOptionLib.js and testOptionLib.js using require and exports.
 

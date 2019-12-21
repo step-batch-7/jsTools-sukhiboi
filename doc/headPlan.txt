@@ -1,10 +1,12 @@
 File -> head.js
 
 Commands Available:
-  1 node head.js filename
-  2 node head.js -n 5 filename
+  1 node head.js filename [going to implement]
+  2 node head.js -n 5 filename [going to implement]
   3 node head.js
   4 node head.js -n 4
+  5 node head.js hello bye hi
+  6 node head.js -n 6 hello bye hi
 
 Cases Covered: 
   1 Program will give first n lines of the content.
@@ -33,19 +35,8 @@ Functions:
 
 ------------------------------
 
-[1.2.2] (Step to read n lines from stdin based on lineCount)
-  
-  Output => string: content
-    "1\n2\n3\n4\n5\n6\n7\n8\n9\n10"
-  
-  Input => number: lineCount
-    10
-  
-  Name: loadContent
 
-==========
-
-[1.2.1a] (Step which will give error if file doesn't exits)
+[1.2a] (Step which will give error if file doesn't exits)
 	
   Output => string: errorMessage (errorMessage, that the file doesn't exists)
 		head: ./hello: No such file or directory (after that program will exit)
@@ -55,10 +46,10 @@ Functions:
 	
   Name => loadContent
 	
-  NOTE: we will use fis.exists to catch the error and redirect it to error stream
+  NOTE: we will use fs.exists to catch the error and redirect it to error stream
 
 
-[1.2.1b] (Step to read contents from a file)
+[1.2b] (Step to read contents from a file)
   
   Output => string: content
     "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11"
@@ -68,31 +59,15 @@ Functions:
   
   Name: loadContent
 
-==========
-
-[1.2] (Step to decide how to get content)
-  
-  Output => string: content or errorMessage
-    "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11"
-  
-  Input => array of strings: filenames
-    [] OR ["hello]
-  
-  Name: loadContent
-  
-  NOTE: when the array of filenames is empty we will use stdin to take input, else we will be reading from the file given (1.2.1, read content from file) (1.2.2, read from stdin) 
-
 ------------------------------
 
 [1.3] (Step to filter filenames)
   
   Output => array of string: filenames
-		["hello"] OR []
+		["hello"]
 	
   Input => array of string : args
 		["node", "head,js", "hello"] OR ["node", "head.js", "-n", "4", "hello"]
-    OR
-    ["node", "head,js"] OR ["node", "head.js", "-n", "4"]
 	
   Name => filterFilenames
 
