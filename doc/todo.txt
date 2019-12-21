@@ -33,7 +33,7 @@ In this version, head can work with single files
   -> chai [done]
   -> nyc [done]
 
-4 Write app test based on expectations
+4 Write app test based on expectations [done]
 
 5 Implement following functions in optionLib.js
   -> filterLines
