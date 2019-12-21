@@ -4,7 +4,9 @@
   "description": "",
   "main": "head.js",
   "scripts": {
-    "test": "nyc mocha"
+    "test": "nyc mocha && ./runAppTests.sh",
+    "apptest": "./runAppTests.sh",
+    "mocha": "nyc mocha"
   },
   "author": "",
   "license": "ISC",
