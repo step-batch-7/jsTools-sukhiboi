@@ -1,0 +1,38 @@
+version 0.1
+
+1 Create following folders
+  -> src/
+  -> test/
+  -> appTests/
+
+2 Create following files
+  -> ./
+     |- package.json
+     |- runAppTests.sh
+     |- head.js
+  -> src/
+     |- optionLib.js
+  -> test/
+     |- testOptionLib.js
+  -> appTests/
+     |- req_single_file.test
+     |- req_single_file_with_-n.test
+     |- req_no_file.test
+     |- req_no_file_with_-n.test
+
+3 Link head.js with testOptionLib.js and testOptionLib.js using require and exports.
+
+4 Install the following tools
+  -> mocha
+  -> chai
+  -> nyc
+
+5 Write app test based on expectations
+
+6 Implement following functions in optionLib.js
+  -> filterLines
+  -> loadContent
+  -> filterFilenames
+  -> getLineCount
+
+  NOTE: first write tests and then implement each of them.
