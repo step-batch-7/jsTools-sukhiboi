@@ -1,0 +1,11 @@
+{
+  "name": "head",
+  "version": "1.0.0",
+  "description": "",
+  "main": "head.js",
+  "scripts": {
+    "test": "nyc mocha"
+  },
+  "author": "",
+  "license": "ISC"
+}

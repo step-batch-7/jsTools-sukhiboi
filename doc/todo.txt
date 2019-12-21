@@ -5,28 +5,28 @@ In this version, head can work with single files
   - a single given with "-n" option along with a line count: it will that much number of lines from start.
       Command: node head.js -n [line count] [filename]
     
-1 Create following folders
-  -> src/
-  -> test/
-  -> appTests/
+1 Create following folders [done]
+  -> src/ [done]
+  -> test/ [done]
+  -> appTests/ [done]
 
 2 Create following files
-  -> ./
-     |- package.json
-     |- runAppTests.sh
-     |- head.js
+  -> ./[done]
+     |- package.json [done]
+     |- runAppTests.sh [done]
+     |- head.js [done]
   -> docs [done]
-     |- head.png
-     |- headPlan.txt
-     |- head.drawio
-  -> src/
-     |- optionLib.js
-  -> test/
-     |- testOptionLib.js
-  -> appTests/
-     |- dummy.txt
-     |- req_single_file.test
-     |- req_single_file_with_-n.test
+     |- head.png [done]
+     |- headPlan.txt [done]
+     |- head.drawio [done]
+  -> src/ [done]
+     |- optionLib.js [done]
+  -> test/ [done]
+     |- testOptionLib.js [done]
+  -> appTests/ [done]
+     |- dummy.txt [done]
+     |- req_single_file.test [done]
+     |- req_single_file_with_-n.test [done]
 
 3 Install the following tools
   -> mocha
