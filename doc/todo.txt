@@ -28,10 +28,10 @@ In this version, head can work with single files
      |- req_single_file.test [done]
      |- req_single_file_with_-n.test [done]
 
-3 Install the following tools
-  -> mocha
-  -> chai
-  -> nyc
+3 Install the following tools [done]
+  -> mocha [done]
+  -> chai [done]
+  -> nyc [done]
 
 4 Write app test based on expectations
 
