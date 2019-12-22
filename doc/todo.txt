@@ -38,7 +38,7 @@ In this version, head can work with single files
 5 Implement following functions in optionLib.js
   -> filterLines
   -> loadContent
-  -> filterFilenames
+  -> filterFilenames {done}
   -> getLineCount [done]
 
   NOTE: Link head.js with testOptionLib.js and testOptionLib.js using require and exports.

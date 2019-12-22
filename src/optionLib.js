@@ -9,6 +9,14 @@ const getLineCount = function(args) {
   return defaultLineCount;
 };
 
+const filterFilenames = function(args) {
+  if(args[2] == "-n"){
+    return args.slice(4);
+  }
+  return args.slice(2)
+};
+
 module.exports = {
-  getLineCount
+  getLineCount,
+  filterFilenames
 };
