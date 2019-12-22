@@ -2,7 +2,8 @@ const assert = require("chai").assert;
 const {
   getLineCount,
   filterFilenames,
-  loadContent
+  loadContent,
+  filterLines
 } = require("../src/optionLib");
 
 describe("#getLineCount()", () => {
@@ -40,6 +41,22 @@ describe("#loadContent()", () => {
     const filenames = ["test/dummy.txt"];
     const actual = loadContent(filenames);
     const expected = "dummy text";
+    assert.strictEqual(actual, expected);
+  });
+});
+
+describe("#filterLines()", () => {
+  it("should give first 10 lines when -n is not specified", () => {
+    const content = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11";
+    const actual = filterLines(content, 10);
+    const expected = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10";
+    assert.strictEqual(actual, expected);
+  });
+
+  it("should give first n when -n is specified", () => {
+    const content = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11";
+    const actual = filterLines(content, 4);
+    const expected = "1\n2\n3\n4";
     assert.strictEqual(actual, expected);
   });
 });

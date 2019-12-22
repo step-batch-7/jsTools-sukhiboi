@@ -22,8 +22,16 @@ const loadContent = function(filenames) {
   return readFileSync(filenames[0], "utf8");
 };
 
+const filterLines = function(content, lineCount) {
+  const lines = content.split("\n");
+  const filteredLines = lines.slice(0, lineCount);
+  const result = filteredLines.join("\n");
+  return result;
+};
+
 module.exports = {
   getLineCount,
   filterFilenames,
-  loadContent
+  loadContent,
+  filterLines
 };
