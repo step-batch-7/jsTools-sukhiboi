@@ -4,8 +4,8 @@
   "description": "",
   "main": "head.js",
   "scripts": {
-    "test": "nyc mocha && ./runAppTests.sh",
-    "apptest": "./runAppTests.sh",
+    "test": "nyc mocha && ./runAppTests.sh appTests/*.test",
+    "apptest": "./runAppTests.sh appTests/*.test",
     "mocha": "nyc mocha"
   },
   "author": "",
