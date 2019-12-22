@@ -1,5 +1,9 @@
 const assert = require("chai").assert;
-const { getLineCount, filterFilenames } = require("../src/optionLib");
+const {
+  getLineCount,
+  filterFilenames,
+  loadContent
+} = require("../src/optionLib");
 
 describe("#getLineCount()", () => {
   it("should return 10 when '-n' option is not specified ", () => {
@@ -28,5 +32,14 @@ describe("#filterFilenames()", () => {
     const actual = filterFilenames(args);
     const expected = "file".split(" ");
     assert.deepStrictEqual(actual, expected);
+  });
+});
+
+describe("#loadContent()", () => {
+  it("should load the contents of given files", () => {
+    const filenames = ["test/dummy.txt"];
+    const actual = loadContent(filenames);
+    const expected = "dummy text";
+    assert.strictEqual(actual, expected);
   });
 });

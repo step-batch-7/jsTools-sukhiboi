@@ -1,3 +1,5 @@
+const { readFileSync } = require("fs");
+
 const getLineCount = function(args) {
   const defaultLineCount = 10;
   const lineCount = parseInt(args[3]);
@@ -10,13 +12,18 @@ const getLineCount = function(args) {
 };
 
 const filterFilenames = function(args) {
-  if(args[2] == "-n"){
+  if (args[2] == "-n") {
     return args.slice(4);
   }
-  return args.slice(2)
+  return args.slice(2);
+};
+
+const loadContent = function(filenames) {
+  return readFileSync(filenames[0], "utf8");
 };
 
 module.exports = {
   getLineCount,
-  filterFilenames
+  filterFilenames,
+  loadContent
 };
