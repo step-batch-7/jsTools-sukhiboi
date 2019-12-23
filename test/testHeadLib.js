@@ -8,11 +8,11 @@ const {
 
 describe("#generateHeadReport()", () => {
   it("should generate Head para", () => {
-    const actual = generateHeadReport(true, "my custom error", console.error);
+    const actual = generateHeadReport(true, "my custom error", "error");
     const expected = {
       isErr: true,
       para: "my custom error",
-      stream: console.error
+      type: "error"
     };
     assert.deepStrictEqual(actual, expected);
   });
@@ -25,7 +25,7 @@ describe("#getHeadLines()", () => {
     const expected = {
       isErr: false,
       para: "1234567891".split("").join("\n"),
-      stream: console.log
+      type: "output"
     };
     assert.deepStrictEqual(actual, expected);
   });
@@ -36,7 +36,7 @@ describe("#getHeadLines()", () => {
     const expected = {
       isErr: false,
       para: "12345678".split("").join("\n"),
-      stream: console.log
+      type: "output"
     };
     assert.deepStrictEqual(actual, expected);
   });
@@ -47,7 +47,7 @@ describe("#getHeadLines()", () => {
     const expected = {
       isErr: false,
       para: "1234567891".split("").join("\n"),
-      stream: console.log
+      type: "output"
     };
     assert.deepStrictEqual(actual, expected);
   });
@@ -65,7 +65,7 @@ describe("#loadContent()", () => {
     const expected = {
       isErr: true,
       para: "head: invalid_file.txt: No such file or directory",
-      stream: console.error
+      type: "error"
     };
     assert.deepStrictEqual(actual, expected);
   });
@@ -90,7 +90,7 @@ describe("#performHead()", () => {
     const expected = {
       isErr: false,
       para: "1234567891".split("").join("\n"),
-      stream: console.log
+      type: "output"
     };
     assert.deepStrictEqual(actual, expected);
   });
@@ -101,7 +101,7 @@ describe("#performHead()", () => {
     const expected = {
       isErr: true,
       para: "head: invalid_file.txt: No such file or directory",
-      stream: console.error
+      type: "error"
     };
     assert.deepStrictEqual(actual, expected);
   });
