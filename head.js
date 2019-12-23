@@ -7,15 +7,15 @@ const {
 } = require("./src/headLib");
 
 const main = function() {
+  const args = process.argv;
   try {
-    const args = process.argv;
     const lineCount = getLineCount(args);
     const filenames = filterFilenames(args);
     const content = loadContent(readFileSync, filenames);
     const lines = filterLines(content, lineCount);
     console.log(lines);
-  } catch (e) {
-    console.error(e.message);
+  } catch (err) {
+    console.error(err.message);
   }
 };
 

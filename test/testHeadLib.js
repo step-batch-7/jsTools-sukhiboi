@@ -12,28 +12,6 @@ describe("#getLineCount()", () => {
     const actual = getLineCount(args);
     assert.strictEqual(actual, 10);
   });
-
-  it("should return 5 when '-n' option is specified with lineCount as 5 ", () => {
-    const args = "node head.js -n 5 file".split(" ");
-    const actual = getLineCount(args);
-    assert.strictEqual(actual, 5);
-  });
-
-  it("should return error when the given line count is not a number ", () => {
-    const args = "node head.js -n g file".split(" ");
-    const actual = function(){getLineCount(args);}
-    const error = "head: illegal line count -- g";
-    assert.throws(actual, error);
-  });
-
-  it("should return error when the given line count is not a number ", () => {
-    const args = "node head.js -n -8 file".split(" ");
-    const actual = function() {
-      getLineCount(args);
-    };
-    const error = "head: illegal line count -- -8";
-    assert.throws(actual, error);
-  });
 });
 
 describe("#filterFilenames()", () => {
@@ -43,23 +21,16 @@ describe("#filterFilenames()", () => {
     const expected = "file".split(" ");
     assert.deepStrictEqual(actual, expected);
   });
-
-  it("should return the array which contain the filenames when the line count is specified", () => {
-    const args = "node head.js -n 5 file".split(" ");
-    const actual = filterFilenames(args);
-    const expected = "file".split(" ");
-    assert.deepStrictEqual(actual, expected);
-  });
 });
 
 describe("#loadContent()", () => {
-  it("should load the contents of given files", () => {
+  it("should load the contents of given file(s)", () => {
     const reader = function(filename, encoding) {
-      assert.strictEqual(filename, "appTests/dummy.txt");
+      assert.strictEqual(filename, "appTests/more_than_10_lines.txt");
       assert.strictEqual(encoding, "utf8");
       return "dummy text";
     };
-    const filenames = ["appTests/dummy.txt"];
+    const filenames = ["appTests/more_than_10_lines.txt"];
     const actual = loadContent(reader, filenames);
     const expected = "dummy text";
     assert.strictEqual(actual, expected);
@@ -85,13 +56,6 @@ describe("#filterLines()", () => {
     const content = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11";
     const actual = filterLines(content, 10);
     const expected = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10";
-    assert.strictEqual(actual, expected);
-  });
-
-  it("should give first n when -n is specified", () => {
-    const content = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11";
-    const actual = filterLines(content, 4);
-    const expected = "1\n2\n3\n4";
     assert.strictEqual(actual, expected);
   });
 

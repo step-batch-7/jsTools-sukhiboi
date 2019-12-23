@@ -1,2 +1,2 @@
-(node head.js -n 5 appTests/invalid.txt)
+(node head.js appTests/invalid.txt)
 head: appTests/invalid.txt: No such file or directory
