@@ -25,6 +25,15 @@ describe("#getLineCount()", () => {
     const error = "head: illegal line count -- g";
     assert.throws(actual, error);
   });
+
+  it("should return error when the given line count is not a number ", () => {
+    const args = "node head.js -n -8 file".split(" ");
+    const actual = function() {
+      getLineCount(args);
+    };
+    const error = "head: illegal line count -- -8";
+    assert.throws(actual, error);
+  });
 });
 
 describe("#filterFilenames()", () => {
@@ -83,6 +92,20 @@ describe("#filterLines()", () => {
     const content = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11";
     const actual = filterLines(content, 4);
     const expected = "1\n2\n3\n4";
+    assert.strictEqual(actual, expected);
+  });
+
+  it("should give all the content, when content has less than 10 lines", () => {
+    const content = "1\n2\n3\n4\n5\n6";
+    const actual = filterLines(content, 10);
+    const expected = "1\n2\n3\n4\n5\n6";
+    assert.strictEqual(actual, expected);
+  });
+
+  it("should give nothing when nothing is there in content", () => {
+    const content = "";
+    const actual = filterLines(content, 10);
+    const expected = "";
     assert.strictEqual(actual, expected);
   });
 });
