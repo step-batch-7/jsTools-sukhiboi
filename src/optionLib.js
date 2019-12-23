@@ -5,8 +5,11 @@ const getLineCount = function(args) {
   const lineCount = parseInt(args[3]);
   const isValidOption = args[2] == "-n";
   const isValidLineCount = Number.isInteger(lineCount) && lineCount > 0;
-  if (isValidOption && isValidLineCount) {
-    return lineCount;
+  if (isValidOption) {
+    if (isValidLineCount) {
+      return lineCount;
+    }
+    throw new Error(`head: illegal line count -- ${args[3]}`);
   }
   return defaultLineCount;
 };

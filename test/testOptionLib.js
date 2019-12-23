@@ -18,6 +18,13 @@ describe("#getLineCount()", () => {
     const actual = getLineCount(args);
     assert.strictEqual(actual, 5);
   });
+
+  it("should return error when the given line count is not a number ", () => {
+    const args = "node head.js -n g file".split(" ");
+    const actual = function(){getLineCount(args);}
+    const error = "head: illegal line count -- g";
+    assert.throws(actual, error);
+  });
 });
 
 describe("#filterFilenames()", () => {
