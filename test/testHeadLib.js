@@ -1,82 +1,108 @@
 const assert = require("chai").assert;
 const {
-  getLineCount,
-  filterFilenames,
+  performHead,
   loadContent,
-  filterLines
+  getHeadLines,
+  generateHeadReport
 } = require("../src/headLib");
 
-describe("#getLineCount()", () => {
-  it("should return 10 when '-n' option is not specified ", () => {
-    const args = "node head.js file".split(" ");
-    const actual = getLineCount(args);
-    assert.strictEqual(actual, 10);
+describe("#generateHeadReport()", () => {
+  it("should generate Head para", () => {
+    const actual = generateHeadReport(true, "my custom error", console.error);
+    const expected = {
+      isErr: true,
+      para: "my custom error",
+      stream: console.error
+    };
+    assert.deepStrictEqual(actual, expected);
   });
 });
 
-describe("#filterFilenames()", () => {
-  it("should return the array which contain the filenames", () => {
-    const args = "node head.js file".split(" ");
-    const actual = filterFilenames(args);
-    const expected = "file".split(" ");
+describe("#getHeadLines()", () => {
+  it("should return first 10 lines when content have more than 10 lines", () => {
+    const content = "123456789101112".split("").join("\n");
+    const actual = getHeadLines(content, 10);
+    const expected = {
+      isErr: false,
+      para: "1234567891".split("").join("\n"),
+      stream: console.log
+    };
+    assert.deepStrictEqual(actual, expected);
+  });
+
+  it("should return all lines when content have less than 10 lines", () => {
+    const content = "12345678".split("").join("\n");
+    const actual = getHeadLines(content, 10);
+    const expected = {
+      isErr: false,
+      para: "12345678".split("").join("\n"),
+      stream: console.log
+    };
+    assert.deepStrictEqual(actual, expected);
+  });
+
+  it("should return all lines when content have only 10 lines", () => {
+    const content = "1234567891".split("").join("\n");
+    const actual = getHeadLines(content, 10);
+    const expected = {
+      isErr: false,
+      para: "1234567891".split("").join("\n"),
+      stream: console.log
+    };
     assert.deepStrictEqual(actual, expected);
   });
 });
 
 describe("#loadContent()", () => {
-  it("should load the contents of given file(s)", () => {
-    const reader = function(filename, encoding) {
-      assert.strictEqual(filename, "appTests/more_than_10_lines.txt");
-      assert.strictEqual(encoding, "utf8");
-      return "some lines of text";
-    };
-    const filenames = ["appTests/more_than_10_lines.txt"];
-    const actual = loadContent(reader, filenames);
-    const expected = "some lines of text";
-    assert.strictEqual(actual, expected);
-  });
-
-  it("should throw error if file doesn't exists", () => {
-    const reader = function(filename, encoding) {
+  it("should return error if file not exists", () => {
+    const read = function(filename, encoding) {
       assert.strictEqual(filename, "invalid_file.txt");
       assert.strictEqual(encoding, "utf8");
-      return "invalid_file";
+      return "1234567891".split("").join("\n");
     };
-    const actual = function() {
-      loadContent(reader, filenames);
-    };
-    const expected = "head: invalid_file.txt: No such file or directory";
     const filenames = ["invalid_file.txt"];
-    assert.throws(actual, expected);
+    const actual = loadContent(read, filenames);
+    const expected = {
+      isErr: true,
+      para: "head: invalid_file.txt: No such file or directory",
+      stream: console.error
+    };
+    assert.deepStrictEqual(actual, expected);
+  });
+
+  it("should return content of the file", () => {
+    const read = function(filename, encoding) {
+      assert.strictEqual(filename, "appTests/only_10_lines.txt");
+      assert.strictEqual(encoding, "utf8");
+      return "1234567891".split("").join("\n");
+    };
+    const filenames = ["appTests/only_10_lines.txt"];
+    const actual = loadContent(read, filenames);
+    const expected = "1234567891".split("").join("\n");
+    assert.deepStrictEqual(actual, expected);
   });
 });
 
-describe("#filterLines()", () => {
-  it("should give first 10 lines when there are more than 10 lines in content", () => {
-    const content = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11";
-    const actual = filterLines(content, 10);
-    const expected = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10";
-    assert.strictEqual(actual, expected);
+describe("#performHead()", () => {
+  it("should give first head lines of the file", () => {
+    const args = "node head.js appTests/only_10_lines.txt".split(" ");
+    const actual = performHead(args);
+    const expected = {
+      isErr: false,
+      para: "1234567891".split("").join("\n"),
+      stream: console.log
+    };
+    assert.deepStrictEqual(actual, expected);
   });
 
-  it("should give first 10 lines when there are only 10 lines in content", () => {
-    const content = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10";
-    const actual = filterLines(content, 10);
-    const expected = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10";
-    assert.strictEqual(actual, expected);
-  });
-
-  it("should give all the when there less than ten lines in content", () => {
-    const content = "1\n2\n3\n4\n5\n6\n7";
-    const actual = filterLines(content, 10);
-    const expected = "1\n2\n3\n4\n5\n6\n7";
-    assert.strictEqual(actual, expected);
-  });
-
-  it("should give nothing when nothing is there in content", () => {
-    const content = "";
-    const actual = filterLines(content, 10);
-    const expected = "";
-    assert.strictEqual(actual, expected);
+  it("should give error if file not exists", () => {
+    const args = "node head.js invalid_file.txt".split(" ");
+    const actual = performHead(args);
+    const expected = {
+      isErr: true,
+      para: "head: invalid_file.txt: No such file or directory",
+      stream: console.error
+    };
+    assert.deepStrictEqual(actual, expected);
   });
 });

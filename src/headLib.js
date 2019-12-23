@@ -1,32 +1,40 @@
-const { existsSync } = require("fs");
+const { readFileSync, existsSync } = require("fs");
 
-const getLineCount = function() {
-  const defaultLineCount = 10;
-  return defaultLineCount;
+const generateHeadReport = function(isErr, para, stream) {
+  return {
+    isErr,
+    para,
+    stream
+  };
 };
 
-const filterFilenames = function(args) {
-  return args.slice(2);
-};
-
-const loadContent = function(reader, filenames) {
+const loadContent = function(read, filenames) {
   const fileExists = existsSync(filenames[0]);
   if (!fileExists) {
-    throw new Error(`head: ${filenames[0]}: No such file or directory`);
+    const errMsg = `head: ${filenames[0]}: No such file or directory`;
+    return generateHeadReport(true, errMsg, console.error);
   }
-  return reader(filenames[0], "utf8");
+  return read(filenames[0], "utf8");
 };
 
-const filterLines = function(content, lineCount) {
+const getHeadLines = function(content, lineCount) {
+  if (content.isErr) {
+    return content;
+  }
   const lines = content.split("\n");
   const filteredLines = lines.slice(0, lineCount);
-  const result = filteredLines.join("\n");
-  return result;
+  return generateHeadReport(false, filteredLines.join("\n"), console.log);
+};
+
+const performHead = function(args) {
+  const filenames = args.slice(2);
+  const content = loadContent(readFileSync, filenames);
+  return getHeadLines(content, 10);
 };
 
 module.exports = {
-  getLineCount,
-  filterFilenames,
+  performHead,
+  getHeadLines,
   loadContent,
-  filterLines
+  generateHeadReport
 };
