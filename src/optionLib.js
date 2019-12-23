@@ -1,4 +1,4 @@
-const { readFileSync } = require("fs");
+const { existsSync } = require("fs");
 
 const getLineCount = function(args) {
   const defaultLineCount = 10;
@@ -18,8 +18,12 @@ const filterFilenames = function(args) {
   return args.slice(2);
 };
 
-const loadContent = function(filenames) {
-  return readFileSync(filenames[0], "utf8");
+const loadContent = function(reader, filenames) {
+  const fileExists = existsSync(filenames[0]);
+  if (fileExists) {
+    return reader(filenames[0], "utf8");
+  }
+  throw new Error(`head: ${filenames[0]}: No such file or directory`);
 };
 
 const filterLines = function(content, lineCount) {

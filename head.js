@@ -1,3 +1,4 @@
+const { readFileSync } = require("fs");
 const {
   getLineCount,
   filterFilenames,
@@ -6,12 +7,16 @@ const {
 } = require("./src/optionLib");
 
 const main = function() {
-  const args = process.argv;
-  const lineCount = getLineCount(args);
-  const filenames = filterFilenames(args)
-  const content = loadContent(filenames);
-  const lines = filterLines(content, lineCount);
-  console.log(lines);
-}
+  try {
+    const args = process.argv;
+    const lineCount = getLineCount(args);
+    const filenames = filterFilenames(args);
+    const content = loadContent(readFileSync, filenames);
+    const lines = filterLines(content, lineCount);
+    console.log(lines);
+  } catch (e) {
+    console.error(e.message);
+  }
+};
 
 main();

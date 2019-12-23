@@ -21,6 +21,7 @@ Functions:
   3 filterFilenames
   4 getLineCount
 
+NOTE: the whole main will be in try/catch, so that if any error occurred wwe can catch it. 
 ------------------------------
 
 [1.1] (Step to filter out first n lines based on lineCount)
@@ -39,14 +40,14 @@ Functions:
 [1.2a] (Step which will give error if file doesn't exits)
 	
   Output => string: errorMessage (errorMessage, that the file doesn't exists)
-		head: ./hello: No such file or directory (after that program will exit)
+		head: hello: No such file or directory (after that program will exit)
 	
-  Input => string: filenames	 
-		"hello"
+  Input => function: reader, array of strings: filenames
+		fs.readFileSync, ["hello"]
 	
   Name => loadContent
 	
-  NOTE: we will use fs.exists to catch the error and redirect it to error stream
+  NOTE: we will use fs.existsSync to check if file exists.
 
 
 [1.2b] (Step to read contents from a file)
@@ -54,8 +55,8 @@ Functions:
   Output => string: content
     "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11"
   
-  Input => array of strings: filenames
-    ["hello"]
+  Input => function: reader, array of strings: filenames
+    fs.readFileSync, ["hello"]
   
   Name: loadContent
 

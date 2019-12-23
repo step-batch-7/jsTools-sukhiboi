@@ -38,10 +38,29 @@ describe("#filterFilenames()", () => {
 
 describe("#loadContent()", () => {
   it("should load the contents of given files", () => {
-    const filenames = ["test/dummy.txt"];
-    const actual = loadContent(filenames);
+    const reader = function(filename, encoding) {
+      assert.strictEqual(filename, "appTests/dummy.txt");
+      assert.strictEqual(encoding, "utf8");
+      return "dummy text";
+    };
+    const filenames = ["appTests/dummy.txt"];
+    const actual = loadContent(reader, filenames);
     const expected = "dummy text";
     assert.strictEqual(actual, expected);
+  });
+
+  it("should throw error if file doesn't exists", () => {
+    const reader = function(filename, encoding) {
+      assert.strictEqual(filename, "dummy.txt");
+      assert.strictEqual(encoding, "utf8");
+      return "dummy text";
+    };
+    const actual = function() {
+      loadContent(reader, filenames);
+    };
+    const expected = "head: dummy.txt: No such file or directory";
+    const filenames = ["dummy.txt"];
+    assert.throws(actual, expected);
   });
 });
 
