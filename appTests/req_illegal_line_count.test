@@ -1,0 +1,2 @@
+(node head.js -n -7 appTests/invalid.txt)
+head: illegal line count -- -7

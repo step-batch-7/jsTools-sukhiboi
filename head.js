@@ -4,7 +4,7 @@ const {
   filterFilenames,
   loadContent,
   filterLines
-} = require("./src/optionLib");
+} = require("./src/headLib");
 
 const main = function() {
   try {

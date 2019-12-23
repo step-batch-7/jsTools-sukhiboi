@@ -1,9 +1,11 @@
-version 1.0
+version 0.1
 In this version, head can work with single files 
-  - a single file given as argument : it will give first 10 lines of that file
-      Command: node head.js [filename]
-  - a single given with "-n" option along with a line count: it will that much number of lines from start.
-      Command: node head.js -n [line count] [filename]
+   
+node head.js more_than_10_lines.txt
+node head.js only_10_lines.txt
+node head.js less_than_10_lines.txt
+node head.js invalid_file.txt
+
     
 1 Create following folders [done]
   -> src/ [done]
@@ -20,9 +22,9 @@ In this version, head can work with single files
      |- headPlan.txt [done]
      |- head.drawio [done]
   -> src/ [done]
-     |- optionLib.js [done]
+     |- headLib.js [done]
   -> test/ [done]
-     |- testOptionLib.js [done]
+     |- testHeadLib.js [done]
   -> appTests/ [done]
      |- dummy.txt [done]
      |- req_single_file.test [done]
@@ -43,3 +45,5 @@ In this version, head can work with single files
 
   NOTE: Link head.js with testOptionLib.js and testOptionLib.js using require and exports.
   NOTE: First write tests and then implement each of them.
+
+   6 change optionLib.js to headLib.js

@@ -4,7 +4,7 @@ const {
   filterFilenames,
   loadContent,
   filterLines
-} = require("../src/optionLib");
+} = require("../src/headLib");
 
 describe("#getLineCount()", () => {
   it("should return 10 when '-n' option is not specified ", () => {

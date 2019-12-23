@@ -2,7 +2,7 @@ File -> head.js
 
 Commands Available:
   1 node head.js filename [going to implement]
-  2 node head.js -n 5 filename [going to implement]
+  2 node head.js -n 5 filename
   3 node head.js
   4 node head.js -n 4
   5 node head.js hello bye hi
