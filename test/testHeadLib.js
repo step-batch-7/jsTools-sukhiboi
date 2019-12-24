@@ -39,13 +39,18 @@ describe("#getHeadLines()", () => {
 
 describe("#loadContent()", () => {
   it("should return error if file not exists", () => {
+    const exists = function(filename) {
+      assert.strictEqual(filename, "invalid_file.txt");
+      return false;
+    };
+
     const read = function(filename, encoding) {
       assert.strictEqual(filename, "invalid_file.txt");
       assert.strictEqual(encoding, "utf8");
       return "1234567891".split("").join("\n");
     };
     const filenames = ["invalid_file.txt"];
-    const actual = loadContent(read, filenames);
+    const actual = loadContent(read, exists, filenames);
     const expected = {
       err: true,
       errMsg: "head: invalid_file.txt: No such file or directory"
@@ -54,13 +59,18 @@ describe("#loadContent()", () => {
   });
 
   it("should return content of the file", () => {
+    const exists = function(filename) {
+      assert.strictEqual(filename, "appTests/only_10_lines.txt");
+      return true;
+    };
+
     const read = function(filename, encoding) {
       assert.strictEqual(filename, "appTests/only_10_lines.txt");
       assert.strictEqual(encoding, "utf8");
       return "1234567891".split("").join("\n");
     };
     const filenames = ["appTests/only_10_lines.txt"];
-    const actual = loadContent(read, filenames);
+    const actual = loadContent(read, exists, filenames);
     const expected = "1234567891".split("").join("\n");
     assert.deepStrictEqual(actual, expected);
   });

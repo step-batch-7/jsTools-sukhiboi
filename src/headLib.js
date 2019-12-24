@@ -1,7 +1,7 @@
 const { readFileSync, existsSync } = require("fs");
 
-const loadContent = function(read, filenames) {
-  const fileExists = existsSync(filenames[0]);
+const loadContent = function(read, exists, filenames) {
+  const fileExists = exists(filenames[0]);
   if (!fileExists) {
     const errMsg = `head: ${filenames[0]}: No such file or directory`;
     return {
@@ -14,16 +14,16 @@ const loadContent = function(read, filenames) {
 
 const getHeadLines = function(content, lineCount) {
   const lines = content.split("\n");
-  const filteredLines = lines.slice(0, lineCount);
+  const headLines = lines.slice(0, lineCount);
   return {
     err: false,
-    headLines: filteredLines.join("\n")
+    headLines: headLines.join("\n")
   };
 };
 
 const filterHeadLines = function(args) {
   const filenames = args.slice(2);
-  const content = loadContent(readFileSync, filenames);
+  const content = loadContent(readFileSync, existsSync, filenames);
   if (content.err) {
     return content;
   }
