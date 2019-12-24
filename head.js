@@ -1,8 +1,7 @@
 const { filterHeadLines } = require("./src/headLib");
 
 const main = function() {
-  const args = process.argv;
-  const {err, errMsg, headLines} = filterHeadLines(args);
+  const { err, errMsg, headLines } = filterHeadLines(process.argv);
   err && console.error(errMsg);
   !err && console.log(headLines)
 };
