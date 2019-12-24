@@ -10,7 +10,7 @@ describe("#getHeadLines()", () => {
     const content = "123456789101112".split("").join("\n");
     const actual = getHeadLines(content, 10);
     const expected = {
-      err: false,
+      errMsg: "",
       headLines: "1234567891".split("").join("\n")
     };
     assert.deepStrictEqual(actual, expected);
@@ -20,7 +20,7 @@ describe("#getHeadLines()", () => {
     const content = "12345678".split("").join("\n");
     const actual = getHeadLines(content, 10);
     const expected = {
-      err: false,
+      errMsg: "",
       headLines: "12345678".split("").join("\n")
     };
     assert.deepStrictEqual(actual, expected);
@@ -30,7 +30,7 @@ describe("#getHeadLines()", () => {
     const content = "1234567891".split("").join("\n");
     const actual = getHeadLines(content, 10);
     const expected = {
-      err: false,
+      errMsg: "",
       headLines: "1234567891".split("").join("\n")
     };
     assert.deepStrictEqual(actual, expected);
@@ -52,8 +52,8 @@ describe("#loadContent()", () => {
     const filenames = ["invalid_file.txt"];
     const actual = loadContent(read, exists, filenames);
     const expected = {
-      err: true,
-      errMsg: "head: invalid_file.txt: No such file or directory"
+      errMsg: "head: invalid_file.txt: No such file or directory",
+      headLines: ""
     };
     assert.deepStrictEqual(actual, expected);
   });
@@ -89,15 +89,15 @@ describe("#filterHeadLines()", () => {
       return "1234567891".split("").join("\n");
     };
 
-    const ioTools = {
-      reader: read,
-      exists: exists
+    const fs = {
+      readFileSync: read,
+      existsSync: exists
     };
 
     const args = "node head.js appTests/only_10_lines.txt".split(" ");
-    const actual = filterHeadLines(args, ioTools);
+    const actual = filterHeadLines(args, fs);
     const expected = {
-      err: false,
+      errMsg: "",
       headLines: "1234567891".split("").join("\n")
     };
     assert.deepStrictEqual(actual, expected);
@@ -115,16 +115,16 @@ describe("#filterHeadLines()", () => {
       return "1234567891".split("").join("\n");
     };
 
-    const ioTools = {
-      reader: read,
-      exists: exists
+    const fs = {
+      readFileSync: read,
+      existsSync: exists
     };
 
     const args = "node head.js invalid_file.txt".split(" ");
-    const actual = filterHeadLines(args, ioTools);
+    const actual = filterHeadLines(args, fs);
     const expected = {
-      err: true,
-      errMsg: "head: invalid_file.txt: No such file or directory"
+      errMsg: "head: invalid_file.txt: No such file or directory",
+      headLines: ""
     };
     assert.deepStrictEqual(actual, expected);
   });

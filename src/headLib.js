@@ -3,9 +3,9 @@ const loadContent = function(read, exists, filenames) {
   if (!fileExists) {
     const errMsg = `head: ${filenames[0]}: No such file or directory`;
     return {
-      err: true,
-      errMsg
-    }
+      errMsg,
+      headLines: ""
+    };
   }
   return read(filenames[0], "utf8");
 };
@@ -14,16 +14,15 @@ const getHeadLines = function(content, lineCount) {
   const lines = content.split("\n");
   const headLines = lines.slice(0, lineCount);
   return {
-    err: false,
+    errMsg: "",
     headLines: headLines.join("\n")
   };
 };
 
-const filterHeadLines = function(args, ioTools) {
-  const {reader, exists} = ioTools;
+const filterHeadLines = function(args, fs) {
   const filenames = args.slice(2);
-  const content = loadContent(reader, exists, filenames);
-  if (content.err) {
+  const content = loadContent(fs.readFileSync, fs.existsSync, filenames);
+  if (content.errMsg) {
     return content;
   }
   return getHeadLines(content, 10);
