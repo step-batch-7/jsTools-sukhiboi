@@ -2,13 +2,9 @@ const { filterHeadLines } = require("./src/headLib");
 
 const main = function() {
   const args = process.argv;
-  const streamTypes = {
-    error: console.error,
-    output: console.log
-  };
-  const result = filterHeadLines(args);
-  const stream = streamTypes[result.type];
-  stream(result.para);
+  const {err, errMsg, headLines} = filterHeadLines(args);
+  err && console.error(errMsg);
+  !err && console.log(headLines)
 };
 
 main();
