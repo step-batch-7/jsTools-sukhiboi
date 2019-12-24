@@ -18,22 +18,22 @@ const loadContent = function(read, filenames) {
 };
 
 const getHeadLines = function(content, lineCount) {
-  if (content.isErr) {
-    return content;
-  }
   const lines = content.split("\n");
   const filteredLines = lines.slice(0, lineCount);
   return generateHeadReport(false, filteredLines.join("\n"), "output");
 };
 
-const performHead = function(args) {
+const filterHeadLines = function(args) {
   const filenames = args.slice(2);
   const content = loadContent(readFileSync, filenames);
+  if (content.isErr) {
+    return content;
+  }
   return getHeadLines(content, 10);
 };
 
 module.exports = {
-  performHead,
+  filterHeadLines,
   getHeadLines,
   loadContent,
   generateHeadReport

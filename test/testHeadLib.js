@@ -1,6 +1,6 @@
 const assert = require("chai").assert;
 const {
-  performHead,
+  filterHeadLines,
   loadContent,
   getHeadLines,
   generateHeadReport
@@ -83,10 +83,10 @@ describe("#loadContent()", () => {
   });
 });
 
-describe("#performHead()", () => {
+describe("#filterHeadLines()", () => {
   it("should give first head lines of the file", () => {
     const args = "node head.js appTests/only_10_lines.txt".split(" ");
-    const actual = performHead(args);
+    const actual = filterHeadLines(args);
     const expected = {
       isErr: false,
       para: "1234567891".split("").join("\n"),
@@ -97,7 +97,7 @@ describe("#performHead()", () => {
 
   it("should give error if file not exists", () => {
     const args = "node head.js invalid_file.txt".split(" ");
-    const actual = performHead(args);
+    const actual = filterHeadLines(args);
     const expected = {
       isErr: true,
       para: "head: invalid_file.txt: No such file or directory",
