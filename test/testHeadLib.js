@@ -78,8 +78,24 @@ describe("#loadContent()", () => {
 
 describe("#filterHeadLines()", () => {
   it("should give first head lines of the file", () => {
+    const exists = function(filename) {
+      assert.strictEqual(filename, "appTests/only_10_lines.txt");
+      return true;
+    };
+
+    const read = function(filename, encoding) {
+      assert.strictEqual(filename, "appTests/only_10_lines.txt");
+      assert.strictEqual(encoding, "utf8");
+      return "1234567891".split("").join("\n");
+    };
+
+    const ioTools = {
+      reader: read,
+      exists: exists
+    };
+
     const args = "node head.js appTests/only_10_lines.txt".split(" ");
-    const actual = filterHeadLines(args);
+    const actual = filterHeadLines(args, ioTools);
     const expected = {
       err: false,
       headLines: "1234567891".split("").join("\n")
@@ -88,8 +104,24 @@ describe("#filterHeadLines()", () => {
   });
 
   it("should give error if file not exists", () => {
+    const exists = function(filename) {
+      assert.strictEqual(filename, "invalid_file.txt");
+      return false;
+    };
+
+    const read = function(filename, encoding) {
+      assert.strictEqual(filename, "invalid_file.txt");
+      assert.strictEqual(encoding, "utf8");
+      return "1234567891".split("").join("\n");
+    };
+
+    const ioTools = {
+      reader: read,
+      exists: exists
+    };
+
     const args = "node head.js invalid_file.txt".split(" ");
-    const actual = filterHeadLines(args);
+    const actual = filterHeadLines(args, ioTools);
     const expected = {
       err: true,
       errMsg: "head: invalid_file.txt: No such file or directory"

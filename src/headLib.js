@@ -1,5 +1,3 @@
-const { readFileSync, existsSync } = require("fs");
-
 const loadContent = function(read, exists, filenames) {
   const fileExists = exists(filenames[0]);
   if (!fileExists) {
@@ -21,9 +19,10 @@ const getHeadLines = function(content, lineCount) {
   };
 };
 
-const filterHeadLines = function(args) {
+const filterHeadLines = function(args, ioTools) {
+  const {reader, exists} = ioTools;
   const filenames = args.slice(2);
-  const content = loadContent(readFileSync, existsSync, filenames);
+  const content = loadContent(reader, exists, filenames);
   if (content.err) {
     return content;
   }
