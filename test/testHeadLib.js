@@ -49,8 +49,12 @@ describe("#loadContent()", () => {
       assert.strictEqual(encoding, "utf8");
       return "1234567891".split("").join("\n");
     };
+    const fs = {
+      existsSync: exists,
+      readFileSync: read
+    }
     const filenames = ["invalid_file.txt"];
-    const actual = loadContent(read, exists, filenames);
+    const actual = loadContent(fs, filenames);
     const expected = {
       errMsg: "head: invalid_file.txt: No such file or directory",
       headLines: ""
@@ -69,8 +73,12 @@ describe("#loadContent()", () => {
       assert.strictEqual(encoding, "utf8");
       return "1234567891".split("").join("\n");
     };
+    const fs = {
+      existsSync: exists,
+      readFileSync: read
+    };
     const filenames = ["appTests/only_10_lines.txt"];
-    const actual = loadContent(read, exists, filenames);
+    const actual = loadContent(fs, filenames);
     const expected = "1234567891".split("").join("\n");
     assert.deepStrictEqual(actual, expected);
   });

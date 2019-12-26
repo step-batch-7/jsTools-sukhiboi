@@ -1,5 +1,5 @@
-const loadContent = function(read, exists, filenames) {
-  const fileExists = exists(filenames[0]);
+const loadContent = function(fs, filenames) {
+  const fileExists = fs.existsSync(filenames[0]);
   if (!fileExists) {
     const errMsg = `head: ${filenames[0]}: No such file or directory`;
     return {
@@ -7,7 +7,7 @@ const loadContent = function(read, exists, filenames) {
       headLines: ""
     };
   }
-  return read(filenames[0], "utf8");
+  return fs.readFileSync(filenames[0], "utf8");
 };
 
 const getHeadLines = function(content, lineCount) {
@@ -21,7 +21,7 @@ const getHeadLines = function(content, lineCount) {
 
 const filterHeadLines = function(args, fs) {
   const filenames = args.slice(2);
-  const content = loadContent(fs.readFileSync, fs.existsSync, filenames);
+  const content = loadContent(fs, filenames);
   if (content.errMsg) {
     return content;
   }
