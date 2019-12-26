@@ -12,7 +12,7 @@ node head.js invalid_file.txt
   -> test/ [done]
   -> appTests/ [done]
 
-2 Create following files
+2 Create following files [done]
   -> ./[done]
      |- package.json [done]
      |- runAppTests.sh [done]
@@ -37,7 +37,7 @@ node head.js invalid_file.txt
 
 4 Write app test based on expectations [done]
 
-5 Implement following functions in optionLib.js
+5 Implement following functions in optionLib.js [done]
   -> filterLines [done]
   -> loadContent [done]
   -> filterFilenames [done]
@@ -46,4 +46,4 @@ node head.js invalid_file.txt
   NOTE: Link head.js with testOptionLib.js and testOptionLib.js using require and exports.
   NOTE: First write tests and then implement each of them.
 
-   6 change optionLib.js to headLib.js
+6 change optionLib.js to headLib.js [done]
