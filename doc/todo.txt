@@ -1,4 +1,4 @@
-version 0.1
+version 0.1 [implemented]
 In this version, head can work with single files 
    
 node head.js more_than_10_lines.txt
@@ -6,7 +6,7 @@ node head.js only_10_lines.txt
 node head.js less_than_10_lines.txt
 node head.js invalid_file.txt
 
-    
+
 1 Create following folders [done]
   -> src/ [done]
   -> test/ [done]
@@ -47,3 +47,12 @@ node head.js invalid_file.txt
   NOTE: First write tests and then implement each of them.
 
 6 change optionLib.js to headLib.js [done]
+
+------------------------------
+
+version 0.2 [implementing]
+In this version, head can work with standard input
+   
+node head.js
+
+1. Updated loadContent function to take content from content from stdin when files array is empty.

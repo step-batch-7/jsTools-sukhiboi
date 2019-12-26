@@ -1,9 +1,9 @@
 File -> head.js
 
 Commands Available:
-  1 node head.js file1 [going to implement]
-  2 node head.js -n 5 file1
-  3 node head.js
+  1 node head.js file1 [implemented]
+  2 node head.js [implementing]
+  3 node head.js -n 5 file1
   4 node head.js -n 4
   5 node head.js file1 file2 file3
   6 node head.js -n 6 file1 file2 file3
@@ -97,6 +97,21 @@ NOTE: We will use fs.existsSync to check whether given file exists or not
     read: fs.readFileSync
     exists: fs.existsSync
     filenames: ["more_than_10_lines.txt"]
+
+  Name => loadContent
+
+
+  [1.3c] (Step to get content from standard input)
+	
+  NOTE: the following output will come from stdin
+
+  Output => string: content
+    "1\n2\n3\4\n5\n6\n7\n8\n9\n1"
+
+  Input => function: read, function: exists, array of strings: filenames
+    read: fs.readFileSync
+    exists: fs.existsSync
+    filenames: []
 
   Name => loadContent
 
