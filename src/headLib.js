@@ -1,13 +1,32 @@
-const loadContent = function(fs, filenames) {
-  const fileExists = fs.existsSync(filenames[0]);
-  if (!fileExists) {
-    const errMsg = `head: ${filenames[0]}: No such file or directory`;
-    return {
-      errMsg,
-      headLines: ""
-    };
+const loadContentFromFile = function(read, filename, returnFileContent) {
+  read(filename, "utf8", (err, data) => {
+    if (err) {
+      const errMsg = `head: ${filename}: No such file or directory`;
+      returnFileContent({
+        errMsg,
+        headLines: ""
+      });
+      return;
+    }
+    returnFileContent(data);
+  });
+};
+
+const loadContent = function(read, stdin, filenames, returnContent) {
+  if (filenames.length !== 0) {
+    loadContentFromFile(read, filenames[0], content => {
+      returnContent(content);
+    });
+    return;
   }
-  return fs.readFileSync(filenames[0], "utf8");
+  let lineCount = 1;
+  stdin.on("data", data => {
+    if (lineCount == 10) {
+      stdin.pause();
+    }
+    returnContent(data.toString());
+    lineCount++;
+  });
 };
 
 const getHeadLines = function(content, lineCount) {
@@ -19,13 +38,16 @@ const getHeadLines = function(content, lineCount) {
   };
 };
 
-const filterHeadLines = function(args, fs) {
+const filterHeadLines = function(args, read, stdin, writer) {
   const filenames = args.slice(2);
-  const content = loadContent(fs, filenames);
-  if (content.errMsg) {
-    return content;
-  }
-  return getHeadLines(content, 10);
+  loadContent(read, stdin, filenames, content => {
+    if (content.errMsg) {
+      writer(content);
+      return;
+    }
+    const headLines = getHeadLines(content, 10);
+    writer(headLines);
+  });
 };
 
 module.exports = {

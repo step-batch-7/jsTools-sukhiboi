@@ -6,7 +6,8 @@
   "scripts": {
     "test": "nyc mocha && ./runAppTests.sh appTests/*.test",
     "apptest": "./runAppTests.sh appTests/*.test",
-    "mocha": "nyc mocha"
+    "mocha": "nyc mocha",
+    "webtest": "nyc --reporter=html mocha"
   },
   "author": "",
   "license": "ISC",

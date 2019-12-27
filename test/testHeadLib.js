@@ -37,103 +37,126 @@ describe("#getHeadLines()", () => {
   });
 });
 
-describe("#loadContent()", () => {
-  it("should return error if file not exists", () => {
-    const exists = function(filename) {
-      assert.strictEqual(filename, "invalid_file.txt");
-      return false;
+describe("#loadContent", () => {
+  it("should read content from stdin when no file is given", () => {
+    const filenames = [];
+    const event = require("events");
+    const stdin = new event.EventEmitter();
+    const returnContent = function(content) {
+      assert.strictEqual(content, "content");
     };
-
-    const read = function(filename, encoding) {
-      assert.strictEqual(filename, "invalid_file.txt");
-      assert.strictEqual(encoding, "utf8");
-      return "1234567891".split("").join("\n");
-    };
-    const fs = {
-      existsSync: exists,
-      readFileSync: read
-    }
-    const filenames = ["invalid_file.txt"];
-    const actual = loadContent(fs, filenames);
-    const expected = {
-      errMsg: "head: invalid_file.txt: No such file or directory",
-      headLines: ""
-    };
-    assert.deepStrictEqual(actual, expected);
+    loadContent(null, stdin, filenames, returnContent);
+    stdin.emit("data", "content");
   });
 
   it("should return content of the file", () => {
-    const exists = function(filename) {
-      assert.strictEqual(filename, "appTests/only_10_lines.txt");
-      return true;
+    const returnContent = function(content) {
+      const expected = "1234567891".split("").join("\n");
+      assert.deepStrictEqual(content, expected);
     };
-
-    const read = function(filename, encoding) {
-      assert.strictEqual(filename, "appTests/only_10_lines.txt");
+    const readCB = function(err, data) {
+      if (err) {
+        returnContent(err);
+        return;
+      }
+      returnContent(data);
+    };
+    const read = function(filename, encoding, readCB) {
+      assert.strictEqual(filename, "only_10_lines.txt");
       assert.strictEqual(encoding, "utf8");
-      return "1234567891".split("").join("\n");
+      const data = "1234567891".split("").join("\n");
+      readCB(null, data);
     };
-    const fs = {
-      existsSync: exists,
-      readFileSync: read
+    const filenames = ["only_10_lines.txt"];
+    loadContent(read, null, filenames, returnContent);
+  });
+
+  it("should give error when is not present", () => {
+    const returnContent = function(content) {
+      const expected = {
+        errMsg: "head: invalid_file.txt: No such file or directory",
+        headLines: ""
+      };
+      assert.deepStrictEqual(content, expected);
     };
-    const filenames = ["appTests/only_10_lines.txt"];
-    const actual = loadContent(fs, filenames);
-    const expected = "1234567891".split("").join("\n");
-    assert.deepStrictEqual(actual, expected);
+    const readCB = function(err, data) {
+      if (err) {
+        returnContent(err);
+        return;
+      }
+      returnContent(data);
+    };
+    const read = function(filename, encoding, readCB) {
+      assert.strictEqual(filename, "invalid_file.txt");
+      assert.strictEqual(encoding, "utf8");
+      readCB("err", null);
+    };
+    const filenames = ["invalid_file.txt"];
+    loadContent(read, null, filenames, returnContent);
   });
 });
 
 describe("#filterHeadLines()", () => {
   it("should give first head lines of the file", () => {
-    const exists = function(filename) {
-      assert.strictEqual(filename, "appTests/only_10_lines.txt");
-      return true;
+    const writer = function(content) {
+      const expected = {
+        errMsg: "",
+        headLines: "1234567891".split("").join("\n")
+      };
+      assert.deepStrictEqual(content, expected);
     };
-
-    const read = function(filename, encoding) {
+    const readCB = function(err, content) {
+      if (err) {
+        writer(err);
+        return;
+      }
+      writer(content);
+    };
+    const read = function(filename, encoding, readCB) {
       assert.strictEqual(filename, "appTests/only_10_lines.txt");
       assert.strictEqual(encoding, "utf8");
-      return "1234567891".split("").join("\n");
+      readCB(null, "1234567891".split("").join("\n"));
     };
-
-    const fs = {
-      readFileSync: read,
-      existsSync: exists
-    };
-
     const args = "node head.js appTests/only_10_lines.txt".split(" ");
-    const actual = filterHeadLines(args, fs);
-    const expected = {
-      errMsg: "",
-      headLines: "1234567891".split("").join("\n")
-    };
-    assert.deepStrictEqual(actual, expected);
+    filterHeadLines(args, read, null, writer);
   });
 
   it("should give error if file not exists", () => {
-    const exists = function(filename) {
-      assert.strictEqual(filename, "invalid_file.txt");
-      return false;
+    const writer = function(content) {
+      const expected = {
+        errMsg: "head: invalid_file.txt: No such file or directory",
+        headLines: ""
+      };
+      assert.deepStrictEqual(content, expected);
     };
-
-    const read = function(filename, encoding) {
+    const readCB = function(err, content) {
+      if (err) {
+        writer(err);
+        return;
+      }
+      writer(content);
+    };
+    const read = function(filename, encoding, readCB) {
       assert.strictEqual(filename, "invalid_file.txt");
       assert.strictEqual(encoding, "utf8");
-      return "1234567891".split("").join("\n");
+      readCB("err", null);
     };
-
-    const fs = {
-      readFileSync: read,
-      existsSync: exists
-    };
-
     const args = "node head.js invalid_file.txt".split(" ");
-    const actual = filterHeadLines(args, fs);
-    const expected = {
-      errMsg: "head: invalid_file.txt: No such file or directory",
-      headLines: ""
+    filterHeadLines(args, read, null, writer);
+  });
+
+  it("should read content from the stdin when no file is given", () => {
+    const args = "node head.js".split(" ");
+    const event = require("events");
+    const stdin = new event.EventEmitter();
+    const writer = function(content) {
+      const expected = {
+        errMsg: "",
+        headLines: "content"
+      };
+      assert.deepStrictEqual(content, expected);
     };
-    assert.deepStrictEqual(actual, expected);
+    filterHeadLines(args, null, stdin, writer);
+    stdin.emit("data", "content");
   });
 });
