@@ -177,5 +177,6 @@ describe('#filterHeadLines()', () => {
     stdin.emit('data', 'content');
     const expectedCount = 1;
     assert.equal(count, expectedCount);
+    stdin.emit('end');
   });
 });
