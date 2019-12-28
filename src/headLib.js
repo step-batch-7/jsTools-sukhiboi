@@ -1,30 +1,33 @@
-const loadContent = function(inputStream, returnContent) {
+const loadContent = function (inputStream, returnContent) {
   let lineCount = 1;
-  inputStream.on("data", data => {
-    if (lineCount == 10) {
-      inputStream.pause();
+  inputStream.on('data', data => {
+    const defaultLineCount = 10;
+    if (lineCount === defaultLineCount) {
+      inputStream.emit('end', 'OK');
     }
     returnContent(data.toString());
     lineCount++;
   });
-  inputStream.on("error", err => {
+  inputStream.on('error', err => {
     returnContent({
       errMsg: `head: ${err.path}: No such file or directory`,
-      headLines: ""
+      headLines: ''
     });
   });
 };
 
-const getHeadLines = function(content) {
-  const lines = content.split("\n");
-  const headLines = lines.slice(0, 10);
+const getHeadLines = function (content) {
+  const lines = content.split('\n');
+  const firstIndex = 0;
+  const eleventhIndex = 10;
+  const headLines = lines.slice(firstIndex, eleventhIndex);
   return {
-    errMsg: "",
-    headLines: headLines.join("\n")
+    errMsg: '',
+    headLines: headLines.join('\n')
   };
 };
 
-const filterHeadLines = function(inputStream, writer) {
+const filterHeadLines = function (inputStream, writer) {
   loadContent(inputStream, content => {
     if (content.errMsg) {
       writer(content);
@@ -35,11 +38,12 @@ const filterHeadLines = function(inputStream, writer) {
   });
 };
 
-const getInputStream = function(filenames, streams) {
-  if (filenames.length == 0) {
+const getInputStream = function (filenames, streams) {
+  const firstElementIndex = 0;
+  if (filenames.length === firstElementIndex) {
     return streams.inputReader;
   }
-  return streams.fileReader(filenames[0]);
+  return streams.fileReader(filenames[firstElementIndex]);
 };
 
 module.exports = {
