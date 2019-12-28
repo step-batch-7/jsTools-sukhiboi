@@ -1,57 +1,50 @@
-const loadContentFromFile = function(read, filename, returnFileContent) {
-  read(filename, "utf8", (err, data) => {
-    if (err) {
-      const errMsg = `head: ${filename}: No such file or directory`;
-      returnFileContent({
-        errMsg,
-        headLines: ""
-      });
-      return;
-    }
-    returnFileContent(data);
-  });
-};
-
-const loadContent = function(read, stdin, filenames, returnContent) {
-  if (filenames.length !== 0) {
-    loadContentFromFile(read, filenames[0], content => {
-      returnContent(content);
-    });
-    return;
-  }
+const loadContent = function(inputStream, returnContent) {
   let lineCount = 1;
-  stdin.on("data", data => {
+  inputStream.on("data", data => {
     if (lineCount == 10) {
-      stdin.pause();
+      inputStream.pause();
     }
     returnContent(data.toString());
     lineCount++;
   });
+  inputStream.on("error", err => {
+    returnContent({
+      errMsg: `head: ${err.path}: No such file or directory`,
+      headLines: ""
+    });
+  });
 };
 
-const getHeadLines = function(content, lineCount) {
+const getHeadLines = function(content) {
   const lines = content.split("\n");
-  const headLines = lines.slice(0, lineCount);
+  const headLines = lines.slice(0, 10);
   return {
     errMsg: "",
     headLines: headLines.join("\n")
   };
 };
 
-const filterHeadLines = function(args, read, stdin, writer) {
-  const filenames = args.slice(2);
-  loadContent(read, stdin, filenames, content => {
+const filterHeadLines = function(inputStream, writer) {
+  loadContent(inputStream, content => {
     if (content.errMsg) {
       writer(content);
       return;
     }
-    const headLines = getHeadLines(content, 10);
+    const headLines = getHeadLines(content);
     writer(headLines);
   });
+};
+
+const getInputStream = function(filenames, streams) {
+  if (filenames.length == 0) {
+    return streams.inputReader;
+  }
+  return streams.fileReader(filenames[0]);
 };
 
 module.exports = {
   filterHeadLines,
   getHeadLines,
-  loadContent
+  loadContent,
+  getInputStream
 };
