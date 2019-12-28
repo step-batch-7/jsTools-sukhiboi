@@ -19,6 +19,7 @@ Functions:
   1 filterHeadLines
   2 getHeadLines
   3 loadContent
+  4 getInputStream
 
 ------------------------------
 
@@ -28,12 +29,12 @@ Functions:
 
   Output => object: headOutcome
 		{
-      errMsg: "",
-      headLines: "1\n2\n3\n4\n5\n6\n7\n8\n9\n1"
+      errMsg: '',
+      headLines: '1\n2\n3\n4\n5\n6\n7\n8\n9\n1'
     }
 	
-  Input => array of strings: process.argv
-		["node", "head.js", "only_10_lines.txt"]
+  Input => stream: inputStream, callback: writer
+		fileReader('only_10_lines.txt'),
 	
   Name => filterHeadLines
 
@@ -43,12 +44,27 @@ Functions:
 
   Output => object: headOutcome
 		{
-      errMsg: "head: invalid_file.txt: No such file or directory",
-      headLines: ""
+      errMsg: 'head: invalid_file.txt: No such file or directory',
+      headLines: ''
     }
 	
-  Input => array of strings: process.argv
-		["node", "head.js", "invalid_file.txt"]
+  Input => stream: inputStream, callback: writer
+		fileReader('only_10_lines.txt'),
+	
+  Name => filterHeadLines
+
+[1.1c] (Step to read content from stdin when no file is given)
+	
+  NOTE: in this case the error will be printed on stderr.
+
+  Output => object: headOutcome
+		{
+      errMsg: '',
+      headLines: 'content'
+    }
+	
+  Input => stream: inputStream, callback: writer
+		fileReader('only_10_lines.txt'),
 	
   Name => filterHeadLines
 
@@ -58,61 +74,91 @@ Functions:
 
   Output => object: headOutcome
   {
-    errMsg: "",
-    headLines: "1\n2\n3\n4\n5\n6\n7\n8\n9\n1"
+    errMsg: '',
+    headLines: '1\n2\n3\n4\n5\n6\n7\n8\n9\n1'
   }
 
-  Input => string: content, number: lineCount
-    content: "1\n2\n3\n4\n5\n6\n7\n8\n9\n1\n0\n1\n1"
-		lineCount: 10
+  Input => string: content
+    content: '1\n2\n3\n4\n5\n6\n7\n8\n9\n1\n0\n1\n1'
 	
   Name => getHeadLines
 
 ------------------------------
 
-NOTE: We will use fs.existsSync to check whether given file exists or not
-
-[1.3a] (Step to get err when file doesn't exists)
+[1.3a] (Step to get file content when file exists)
 
   Output => object: content
   {
-    errMsg: "head: invalid_file.txt: No such file or directory",
-    headLines: ""
+    errMsg: '',
+    headLines: 'content'
   }
 	
-  Input => function: read, function: exists, array of strings: filenames
-    read: fs.readFileSync
-    exists: fs.existsSync
-    filenames: ["invalid_file.txt"]
+  Input => stream: inputStream, callback: returnContent
+    fs.createReadableStream('only_10_lines.txt')
+
+  NOTE: when the file present read its data and send it to callback
 
   Name => loadContent
 
 
-  [1.3b] (Step to get content when file exists)
-	
-  Output => string: content
-    "1\n2\n3\4\n5\n6\n7\n8\n9\n1\n0\n1\n1"
+[1.3b] (Step to get error when file doesn't exists)
 
-  Input => function: read, function: exists, array of strings: filenames
-    read: fs.readFileSync
-    exists: fs.existsSync
-    filenames: ["more_than_10_lines.txt"]
+  Output => object: content
+  {
+    errMsg: 'head: invalid_file.txt: No such file or directory',
+    headLines: ''
+  }
+	
+  Input => stream: inputStream, callback: returnContent
+    fs.createReadableStream('invalid_file.txt')
+
+  NOTE: when the file doesn't present format error and send it to callback
 
   Name => loadContent
 
 
-  [1.3c] (Step to get content from standard input)
+[1.3c] (Step to get content from stdin)
+
+  Output => object: content
+  {
+    errMsg: '',
+    headLines: 'content'
+  }
 	
-  NOTE: the following output will come from stdin
+  Input => stream: inputStream, callback: returnContent
+    process.stdin
 
-  Output => string: content
-    "1\n2\n3\4\n5\n6\n7\n8\n9\n1"
-
-  Input => function: read, function: exists, array of strings: filenames
-    read: fs.readFileSync
-    exists: fs.existsSync
-    filenames: []
+  NOTE: It will read from stdin when input stream is stdin. 
 
   Name => loadContent
 
   ------------------------------
+
+[1.4a] (Step to get file stream)
+  
+  Output => stream: fileReader
+    fs.createReadableStream(filename)
+
+  Input => array of strings: filenames, object: streams
+    ['only_10_lines.txt'],
+    {
+      fileReader: fs.createReadableStream,
+      inputReader: process.stdin
+    }
+
+  Name => getInputStream
+
+
+[1.4b] (Step to get input stream)
+
+  Output => stream: inputReader
+    process.stdin
+  
+  Input => array of strings: filenames, object: streams
+    [],
+    {
+      fileReader: fs.createReadableStream,
+      inputReader: process.stdin
+    }
+  
+  Name => getInputStream
