@@ -1,5 +1,5 @@
-const { stdin, stdout, stderr } = require('process');
 const fs = require('fs');
+const { stdin, stdout, stderr } = require('process');
 const { filterHeadLines, getInputStream } = require('./src/headLib');
 
 const main = function () {

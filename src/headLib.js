@@ -3,7 +3,7 @@ const loadContent = function (inputStream, returnContent) {
   inputStream.on('data', data => {
     const defaultLineCount = 10;
     if (lineCount === defaultLineCount) {
-      inputStream.emit('end', 'OK');
+      inputStream.emit('end');
     }
     returnContent(data.toString());
     lineCount++;

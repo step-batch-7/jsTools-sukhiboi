@@ -43,54 +43,81 @@ describe('#getHeadLines()', () => {
 });
 
 describe('#loadContent()', () => {
-  const firstElementIndex = 0;
-  it('should read content from stdin when no file is given', () => {
-    const stdin = new event.EventEmitter();
-    let count = 0;
-    const returnContent = function (content) {
-      count++;
-      assert.strictEqual(content, 'content');
-    };
-    loadContent(stdin, returnContent);
-    stdin.emit('data', 'content');
-    const expectedCount = 1;
-    assert.strictEqual(count, expectedCount);
-    stdin.emit('end');
-  });
-
-  it('should return content of the file', () => {
-    let count = 0;
-    const returnContent = function (content) {
-      count++;
-      const expected = 'content';
-      assert.deepStrictEqual(content, expected);
-    };
-    const filenames = ['only_10_lines.txt'];
-    const fileReader = new event.EventEmitter(filenames[firstElementIndex]);
-    loadContent(fileReader, returnContent);
-    fileReader.emit('data', 'content');
-    const expectedCount = 1;
-    assert.equal(count, expectedCount);
-    fileReader.emit('end');
-  });
-
-  it('should give error when file is not present', () => {
-    let count = 0;
-    const returnContent = function (content) {
-      count++;
-      const expected = {
-        errMsg: 'head: invalid_file.txt: No such file or directory',
-        headLines: ''
+  context('#Reading from stdin', () => {
+    it('should read content from stdin', (done) => {
+      const inputReader = new event.EventEmitter();
+      let count = 0;
+      const returnContent = function (content) {
+        count++;
+        assert.strictEqual(content, 'content');
       };
-      assert.deepStrictEqual(content, expected);
-    };
-    const filenames = ['invalid_file.txt'];
-    const fileReader = new event.EventEmitter(filenames[firstElementIndex]);
-    loadContent(fileReader, returnContent);
-    fileReader.emit('error', { path: filenames[firstElementIndex] });
-    const expectedCount = 1;
-    assert.equal(count, expectedCount);
-    fileReader.emit('end');
+      inputReader.on('end', () => {
+        done();
+      });
+      loadContent(inputReader, returnContent);
+      inputReader.emit('data', 'content');
+      const expectedCount = 1;
+      assert.strictEqual(count, expectedCount);
+      inputReader.emit('end');
+    });
+
+    it('should pause after 10 lines', (done) => {
+      const inputReader = new event.EventEmitter();
+      let count = 0;
+      const returnContent = function (content) {
+        count++;
+        assert.strictEqual(content, 'content');
+      };
+      inputReader.on('end', () => {
+        const expectedCount = 9;
+        assert.strictEqual(count, expectedCount);
+        done();
+      });
+      loadContent(inputReader, returnContent);
+      const numLimit = 12;
+      for (let num = 1; num < numLimit; num++) {
+        inputReader.emit('data', 'content');
+      }
+    });
+  });
+
+  context('#Reading from files', () => {
+    const firstElementIndex = 0;
+    it('should return content of the file', () => {
+      let count = 0;
+      const returnContent = function (content) {
+        count++;
+        const expected = 'content';
+        assert.deepStrictEqual(content, expected);
+      };
+      const filenames = ['only_10_lines.txt'];
+      const fileReader = new event.EventEmitter(filenames[firstElementIndex]);
+      loadContent(fileReader, returnContent);
+      fileReader.emit('data', 'content');
+      const expectedCount = 1;
+      assert.equal(count, expectedCount);
+      fileReader.emit('end');
+    });
+
+    it('should give error when file is not present', () => {
+      let count = 0;
+      const returnContent = function (content) {
+        count++;
+        const expected = {
+          errMsg: 'head: invalid_file.txt: No such file or directory',
+          headLines: ''
+        };
+        assert.deepStrictEqual(content, expected);
+      };
+      const filenames = ['invalid_file.txt'];
+      const fileReader = new event.EventEmitter(filenames[firstElementIndex]);
+      loadContent(fileReader, returnContent);
+      fileReader.emit('error', { path: filenames[firstElementIndex] });
+      const expectedCount = 1;
+      assert.equal(count, expectedCount);
+      fileReader.emit('end');
+    });
+
   });
 });
 
@@ -103,14 +130,14 @@ describe('#getInputStream()', () => {
     };
     const streams = {
       fileReader,
-      inputReader: process.stdin
+      inputReader: process.inputStream
     };
     const inputStream = getInputStream(args.slice(userArgsIndex), streams);
     const readStream = streams.fileReader(args[userArgsIndex]);
     assert.deepStrictEqual(inputStream, readStream);
   });
 
-  it('should return stdin when no file is given', () => {
+  it('should return inputStream when no file is given', () => {
     const args = 'node head.js'.split(' ');
     const fileReader = function () {
       return new event.EventEmitter();
@@ -142,6 +169,7 @@ describe('#filterHeadLines()', () => {
     fileReader.emit('data', 'content');
     const expectedCount = 1;
     assert.equal(count, expectedCount);
+    fileReader.emit('end');
   });
 
   it('should give error if file not exists', () => {
@@ -160,11 +188,11 @@ describe('#filterHeadLines()', () => {
     fileReader.emit('error', { path: args[userArgsIndex] });
     const expectedCount = 1;
     assert.equal(count, expectedCount);
+    fileReader.emit('end');
   });
 
-  it('should read content from the stdin when no file is given', () => {
+  it('should read content from the stdin when no file is given', (done) => {
     let count = 0;
-    const stdin = new event.EventEmitter();
     const writer = function (content) {
       count++;
       const expected = {
@@ -173,10 +201,14 @@ describe('#filterHeadLines()', () => {
       };
       assert.deepStrictEqual(content, expected);
     };
-    filterHeadLines(stdin, writer);
-    stdin.emit('data', 'content');
+    const inputReader = new event.EventEmitter();
+    inputReader.on('end', () => {
+      done();
+    });
+    filterHeadLines(inputReader, writer);
+    inputReader.emit('data', 'content');
     const expectedCount = 1;
     assert.equal(count, expectedCount);
-    stdin.emit('end');
+    inputReader.emit('end');
   });
 });
