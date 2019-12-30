@@ -83,7 +83,7 @@ describe('#loadContent()', () => {
 
   context('#Reading from files', () => {
     const firstElementIndex = 0;
-    it('should return content of the file', () => {
+    it('should return content of the file', (done) => {
       let count = 0;
       const returnContent = function (content) {
         count++;
@@ -92,6 +92,9 @@ describe('#loadContent()', () => {
       };
       const filenames = ['only_10_lines.txt'];
       const fileReader = new event.EventEmitter(filenames[firstElementIndex]);
+      fileReader.on('end', () => {
+        done();
+      });
       loadContent(fileReader, returnContent);
       fileReader.emit('data', 'content');
       const expectedCount = 1;
@@ -99,7 +102,7 @@ describe('#loadContent()', () => {
       fileReader.emit('end');
     });
 
-    it('should give error when file is not present', () => {
+    it('should give error when file is not present', (done) => {
       let count = 0;
       const returnContent = function (content) {
         count++;
@@ -111,6 +114,9 @@ describe('#loadContent()', () => {
       };
       const filenames = ['invalid_file.txt'];
       const fileReader = new event.EventEmitter(filenames[firstElementIndex]);
+      fileReader.on('end', () => {
+        done();
+      });
       loadContent(fileReader, returnContent);
       fileReader.emit('error', { path: filenames[firstElementIndex] });
       const expectedCount = 1;
@@ -153,7 +159,7 @@ describe('#getInputStream()', () => {
 
 describe('#filterHeadLines()', () => {
   const userArgsIndex = 2;
-  it('should give first head lines of the file', () => {
+  it('should give first head lines of the file', (done) => {
     let count = 0;
     const writer = function (content) {
       count++;
@@ -165,6 +171,9 @@ describe('#filterHeadLines()', () => {
     };
     const args = 'node head.js only_10_lines.txt'.split(' ');
     const fileReader = new event.EventEmitter(args[userArgsIndex]);
+    fileReader.on('end', () => {
+      done();
+    });
     filterHeadLines(fileReader, writer);
     fileReader.emit('data', 'content');
     const expectedCount = 1;
@@ -172,7 +181,7 @@ describe('#filterHeadLines()', () => {
     fileReader.emit('end');
   });
 
-  it('should give error if file not exists', () => {
+  it('should give error if file not exists', (done) => {
     let count = 0;
     const writer = function (content) {
       count++;
@@ -184,6 +193,9 @@ describe('#filterHeadLines()', () => {
     };
     const args = 'node head.js invalid_file.txt'.split(' ');
     const fileReader = new event.EventEmitter(args[userArgsIndex]);
+    fileReader.on('end', () => {
+      done();
+    });
     filterHeadLines(fileReader, writer);
     fileReader.emit('error', { path: args[userArgsIndex] });
     const expectedCount = 1;
