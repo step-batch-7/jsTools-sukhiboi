@@ -4,10 +4,11 @@
   "description": "",
   "main": "head.js",
   "scripts": {
-    "test": "nyc mocha && ./runAppTests.sh appTests/*.test",
-    "apptest": "./runAppTests.sh appTests/*.test",
+    "appTest": "./runAppTests.sh appTests/*.test",
     "mocha": "nyc mocha",
-    "webtest": "nyc --reporter=html mocha"
+    "test:web": "nyc --reporter=html mocha && open coverage/index.html",
+    "eslint": "eslint test src head.js",
+    "test": "npm run mocha && npm run appTest && eslint test src head.js"
   },
   "author": "",
   "license": "ISC",
