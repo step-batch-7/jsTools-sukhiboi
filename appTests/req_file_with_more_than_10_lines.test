@@ -1,4 +1,4 @@
-(node head.js appTests/more_than_10_lines.txt)
+(echo "1\n2\n3\n4\n5\n6\n7\n8\n9\n1\n0\n1\n1" >> appTests/more_than_10_lines.txt && node head.js appTests/more_than_10_lines.txt && rm appTests/more_than_10_lines.txt)
 1
 2
 3

@@ -1,0 +1,11 @@
+(echo "1\n2\n3\n4\n5\n6\n7\n8\n9\n1" >> appTests/only_10_lines.txt && cat appTests/only_10_lines.txt | node head.js && rm appTests/only_10_lines.txt)
+1
+2
+3
+4
+5
+6
+7
+8
+9
+1
