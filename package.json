@@ -8,7 +8,7 @@
     "mocha": "nyc mocha",
     "test:web": "nyc --reporter=html mocha && open coverage/index.html",
     "eslint": "eslint test src head.js",
-    "test": "npm run mocha && npm run appTest && eslint test src head.js"
+    "test": "npm run mocha && npm run appTest && npm run eslint"
   },
   "author": "",
   "license": "ISC",
