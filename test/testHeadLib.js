@@ -1,5 +1,6 @@
 const event = require('events');
 const assert = require('chai').assert;
+const sinon = require('sinon');
 const {
   filterHeadLines,
   loadContent,
@@ -43,40 +44,39 @@ describe('#getHeadLines()', () => {
 });
 
 describe('#loadContent()', () => {
+  const firstElementIndex = 0;
+  let inputReader;
+  let returnContent;
+
+  beforeEach(() => {
+    inputReader = new event.EventEmitter();
+    returnContent = sinon.spy();
+  });
+
   context('#Reading from stdin', () => {
     it('should read content from stdin', (done) => {
-      const inputReader = new event.EventEmitter();
-      let count = 0;
-      const returnContent = function (content) {
-        count++;
-        assert.strictEqual(content, 'content');
-      };
-      inputReader.on('end', () => {
-        done();
-      });
+      inputReader.on('end', done());
       loadContent(inputReader, returnContent);
       inputReader.emit('data', 'content');
-      const expectedCount = 1;
-      assert.strictEqual(count, expectedCount);
+      assert.ok(returnContent.called);
+      const actual = returnContent.firstCall.args[firstElementIndex];
+      assert.strictEqual(actual, 'content');
       inputReader.emit('end');
     });
 
     it('should pause after 10 lines', (done) => {
-      const inputReader = new event.EventEmitter();
-      let count = 0;
-      const returnContent = function (content) {
-        count++;
-        assert.strictEqual(content, 'content');
-      };
       inputReader.on('end', () => {
-        const expectedCount = 9;
-        assert.strictEqual(count, expectedCount);
+        const expectedCallCount = 9;
+        assert.strictEqual(returnContent.callCount, expectedCallCount);
         done();
       });
       loadContent(inputReader, returnContent);
       const numLimit = 12;
       for (let num = 1; num < numLimit; num++) {
         inputReader.emit('data', 'content');
+        assert.ok(returnContent.called);
+        const actual = returnContent.firstCall.args[firstElementIndex];
+        assert.strictEqual(actual, 'content');
       }
     });
   });
@@ -84,43 +84,29 @@ describe('#loadContent()', () => {
   context('#Reading from files', () => {
     const firstElementIndex = 0;
     it('should return content of the file', (done) => {
-      let count = 0;
-      const returnContent = function (content) {
-        count++;
-        const expected = 'content';
-        assert.deepStrictEqual(content, expected);
-      };
       const filenames = ['only_10_lines.txt'];
       const fileReader = new event.EventEmitter(filenames[firstElementIndex]);
-      fileReader.on('end', () => {
-        done();
-      });
+      fileReader.on('end', done());
       loadContent(fileReader, returnContent);
       fileReader.emit('data', 'content');
-      const expectedCount = 1;
-      assert.equal(count, expectedCount);
+      assert.ok(returnContent.called);
+      const actual = returnContent.firstCall.args[firstElementIndex];
+      assert.strictEqual(actual, 'content');
       fileReader.emit('end');
     });
 
     it('should give error when file is not present', (done) => {
-      let count = 0;
-      const returnContent = function (content) {
-        count++;
-        const expected = {
-          errMsg: 'head: invalid_file.txt: No such file or directory',
-          headLines: ''
-        };
-        assert.deepStrictEqual(content, expected);
-      };
       const filenames = ['invalid_file.txt'];
       const fileReader = new event.EventEmitter(filenames[firstElementIndex]);
-      fileReader.on('end', () => {
-        done();
-      });
+      fileReader.on('end', done());
       loadContent(fileReader, returnContent);
       fileReader.emit('error', { path: filenames[firstElementIndex] });
-      const expectedCount = 1;
-      assert.equal(count, expectedCount);
+      assert.ok(returnContent.called);
+      const actual = returnContent.firstCall.args[firstElementIndex];
+      assert.deepStrictEqual(actual, {
+        errMsg: 'head: invalid_file.txt: No such file or directory',
+        headLines: ''
+      });
       fileReader.emit('end');
     });
 
