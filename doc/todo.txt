@@ -60,5 +60,5 @@ cat more_than_10_lines.txt | node head.js
 1. Update loadContent function to take content from content from stdin when files array is empty. [done]
 2. make them async [done]
 3. add eslint [done]
-4. add sinon
+4. add sinon [done]
 5. change all events to sinon.fake.
