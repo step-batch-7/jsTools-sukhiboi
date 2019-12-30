@@ -10,7 +10,11 @@ const {
 
 describe('#getHeadLines()', () => {
   it('should return first 10 lines if content have more than 10 lines', () => {
-    const content = '123456789101112'.split('').join('\n');
+    const headLines = '123456789101112'.split('').join('\n');
+    const content = {
+      errMsg: '',
+      headLines
+    };
     const lineCount = 10;
     const actual = getHeadLines(content, lineCount);
     const expected = {
@@ -21,7 +25,11 @@ describe('#getHeadLines()', () => {
   });
 
   it('should return all lines when content have less than 10 lines', () => {
-    const content = '12345678'.split('').join('\n');
+    const headLines = '12345678'.split('').join('\n');
+    const content = {
+      errMsg: '',
+      headLines
+    };
     const lineCount = 10;
     const actual = getHeadLines(content, lineCount);
     const expected = {
@@ -32,7 +40,11 @@ describe('#getHeadLines()', () => {
   });
 
   it('should return all lines when content have only 10 lines', () => {
-    const content = '1234567891'.split('').join('\n');
+    const headLines = '1234567891'.split('').join('\n');
+    const content = {
+      errMsg: '',
+      headLines
+    };
     const lineCount = 10;
     const actual = getHeadLines(content, lineCount);
     const expected = {
@@ -76,7 +88,7 @@ describe('#loadContent()', () => {
         inputReader.emit('data', 'content');
         assert.ok(returnContent.called);
         const actual = returnContent.firstCall.args[firstElementIndex];
-        assert.strictEqual(actual, 'content');
+        assert.deepStrictEqual(actual, { errMsg: '', headLines: 'content' });
       }
     });
   });

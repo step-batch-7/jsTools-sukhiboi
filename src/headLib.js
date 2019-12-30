@@ -1,12 +1,15 @@
 const loadContent = function (inputStream, returnContent) {
   let lineCount = 1;
+  const defaultLineCount = 10;
   inputStream.on('data', data => {
-    const defaultLineCount = 10;
     if (lineCount === defaultLineCount) {
       inputStream.emit('end');
     }
-    returnContent(data.toString());
     lineCount++;
+    returnContent({
+      errMsg: '',
+      headLines: data.toString()
+    });
   });
   inputStream.on('error', err => {
     returnContent({
@@ -17,22 +20,18 @@ const loadContent = function (inputStream, returnContent) {
 };
 
 const getHeadLines = function (content) {
-  const lines = content.split('\n');
+  const lines = content.headLines.split('\n');
   const firstIndex = 0;
   const eleventhIndex = 10;
   const headLines = lines.slice(firstIndex, eleventhIndex);
   return {
-    errMsg: '',
+    errMsg: content.errMsg,
     headLines: headLines.join('\n')
   };
 };
 
 const filterHeadLines = function (inputStream, writer) {
   loadContent(inputStream, content => {
-    if (content.errMsg) {
-      writer(content);
-      return;
-    }
     const headLines = getHeadLines(content);
     writer(headLines);
   });
