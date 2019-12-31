@@ -12,6 +12,7 @@ const loadContent = function (inputStream, returnContent) {
     });
   });
   inputStream.on('error', err => {
+    inputStream.destroy();
     returnContent({
       errMsg: `head: ${err.path}: No such file or directory`,
       headLines: ''

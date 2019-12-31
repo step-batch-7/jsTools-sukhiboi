@@ -62,3 +62,4 @@ cat more_than_10_lines.txt | node head.js
 3. add eslint [done]
 4. add sinon [done]
 5. change all events to sinon.fake.
+6. change return of getHeadLines (function)

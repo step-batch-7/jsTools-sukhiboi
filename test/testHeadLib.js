@@ -56,95 +56,75 @@ describe('#getHeadLines()', () => {
 });
 
 describe('#loadContent()', () => {
-  const firstElementIndex = 0;
+  const firstIndex = 0, secondIndex = 1;
   let inputReader;
   let returnContent;
+  let fileReader;
 
   beforeEach(() => {
-    inputReader = new event.EventEmitter();
+    fileReader = { on: sinon.spy(), destroy: sinon.spy() };
+    inputReader = { on: sinon.spy(), destroy: sinon.spy() };
     returnContent = sinon.spy();
-    inputReader.destroy = () => inputReader.emit('close');
   });
 
   context('#Reading from stdin', () => {
-    it('should read content from stdin', (done) => {
-      inputReader.on('close', done);
+    it('should read content from stdin', () => {
       loadContent(inputReader, returnContent);
-      inputReader.emit('data', 'content');
-      assert.ok(returnContent.called);
-      const actual = returnContent.firstCall.args[firstElementIndex];
-      assert.deepStrictEqual(actual, { errMsg: '', headLines: 'content' });
-      inputReader.destroy();
+      assert.strictEqual(inputReader.on.firstCall.args[firstIndex], 'data');
+      assert.strictEqual(inputReader.on.secondCall.args[firstIndex], 'error');
+      inputReader.on.firstCall.args[secondIndex]('content');
+      assert.ok(returnContent.calledWith({
+        errMsg: '',
+        headLines: 'content'
+      }));
     });
 
     it('should destroy after 10 lines', (done) => {
-      inputReader.on('close', () => {
-        const expectedCallCount = 9;
-        assert.strictEqual(returnContent.callCount, expectedCallCount);
-        done();
-      });
+      const numLimit = 11, expectedCallCount = 10;
       loadContent(inputReader, returnContent);
-      const numLimit = 10;
-      for (let num = 0; num < numLimit; num++) {
-        inputReader.emit('data', 'content');
-        assert.ok(returnContent.called);
-        const actual = returnContent.firstCall.args[firstElementIndex];
-        assert.deepStrictEqual(actual, { errMsg: '', headLines: 'content' });
-      }
-    });
-
-    it('should destroy before 10 if control D pressed', (done) => {
-      inputReader.on('close', () => {
-        const expectedCallCount = 4;
-        assert.strictEqual(returnContent.callCount, expectedCallCount);
-        done();
-      });
-      loadContent(inputReader, returnContent);
-      const numLimit = 12, expectedChunks = 4;
-      for (let num = 0; num < numLimit; num++) {
-        if (num === expectedChunks) {
-          inputReader.destroy();
+      assert.strictEqual(inputReader.on.firstCall.args[firstIndex], 'data');
+      assert.strictEqual(inputReader.on.secondCall.args[firstIndex], 'error');
+      for (let num = 1; num <= numLimit; num++) {
+        if (inputReader.destroy.called) {
+          assert.equal(returnContent.callCount, expectedCallCount);
+          done();
         }
-        inputReader.emit('data', 'content');
-        assert.ok(returnContent.called);
-        const actual = returnContent.firstCall.args[firstElementIndex];
-        assert.deepStrictEqual(actual, { errMsg: '', headLines: 'content' });
+        inputReader.on.firstCall.args[secondIndex]('content');
+        assert.ok(returnContent.calledWith({
+          errMsg: '',
+          headLines: 'content'
+        }));
       }
     });
   });
 
   context('#Reading from files', () => {
     const firstElementIndex = 0;
-    it('should return content of the file', (done) => {
-      const filenames = ['only_10_lines.txt'];
-      const fileReader = new event.EventEmitter(filenames[firstElementIndex]);
-      fileReader.on('close', done);
-      fileReader.destroy = () => { fileReader.emit('close'); };
+    it('should return content of the file', () => {
       loadContent(fileReader, returnContent);
-      fileReader.emit('data', 'content');
+      assert.strictEqual(fileReader.on.firstCall.args[firstIndex], 'data');
+      assert.strictEqual(fileReader.on.secondCall.args[firstIndex], 'error');
+      fileReader.on.firstCall.args[secondIndex]('content');
       assert.ok(returnContent.called);
       const actual = returnContent.firstCall.args[firstElementIndex];
       assert.deepStrictEqual(actual, {
         errMsg: '',
         headLines: 'content'
       });
-      fileReader.destroy();
     });
 
-    it('should give error when file is not present', (done) => {
-      const filenames = ['invalid_file.txt'];
-      const fileReader = new event.EventEmitter(filenames[firstElementIndex]);
-      fileReader.on('close', done);
-      fileReader.destroy = () => { fileReader.emit('close'); };
+    it('should give error when file is not present', () => {
       loadContent(fileReader, returnContent);
-      fileReader.emit('error', { path: filenames[firstElementIndex] });
+      assert.strictEqual(fileReader.on.firstCall.args[firstIndex], 'data');
+      assert.strictEqual(fileReader.on.secondCall.args[firstIndex], 'error');
+      fileReader.on.secondCall.args[secondIndex]({ path: 'invalid_file.txt' });
       assert.ok(returnContent.called);
       const actual = returnContent.firstCall.args[firstElementIndex];
       assert.deepStrictEqual(actual, {
         errMsg: 'head: invalid_file.txt: No such file or directory',
         headLines: ''
       });
-      fileReader.destroy();
+      assert.ok(fileReader.destroy.called);
     });
 
   });
@@ -183,23 +163,25 @@ describe('#getInputStream()', () => {
 });
 
 describe('#filterHeadLines()', () => {
-  const userArgsIndex = 2;
-  const firstElementIndex = 0;
+  const firstIndex = 0;
+  const secondIndex = 1;
+  let inputReader;
+  let fileReader;
   let writer;
 
   beforeEach(() => {
+    fileReader = { on: sinon.spy(), destroy: sinon.spy() };
+    inputReader = { on: sinon.spy(), destroy: sinon.spy() };
     writer = sinon.spy();
   });
 
-  it('should give first head lines of the file', (done) => {
-    const args = 'node head.js only_10_lines.txt'.split(' ');
-    const fileReader = new event.EventEmitter(args[userArgsIndex]);
-    fileReader.on('close', done);
-    fileReader.destroy = () => { fileReader.emit('close'); };
+  it('should give first head lines of the file', () => {
     filterHeadLines(fileReader, writer);
-    fileReader.emit('data', 'content');
+    assert.strictEqual(fileReader.on.firstCall.args[firstIndex], 'data');
+    assert.strictEqual(fileReader.on.secondCall.args[firstIndex], 'error');
+    fileReader.on.firstCall.args[secondIndex]('content');
     assert.ok(writer.called);
-    const actual = writer.firstCall.args[firstElementIndex];
+    const actual = writer.firstCall.args[firstIndex];
     assert.deepStrictEqual(actual, {
       errMsg: '',
       headLines: 'content'
@@ -207,15 +189,13 @@ describe('#filterHeadLines()', () => {
     fileReader.destroy();
   });
 
-  it('should give error if file not exists', (done) => {
-    const args = 'node head.js invalid_file.txt'.split(' ');
-    const fileReader = new event.EventEmitter(args[userArgsIndex]);
-    fileReader.on('close', done);
-    fileReader.destroy = () => { fileReader.emit('close'); };
+  it('should give error if file not exists', () => {
     filterHeadLines(fileReader, writer);
-    fileReader.emit('error', { path: args[userArgsIndex] });
+    assert.strictEqual(fileReader.on.firstCall.args[firstIndex], 'data');
+    assert.strictEqual(fileReader.on.secondCall.args[firstIndex], 'error');
+    fileReader.on.secondCall.args[secondIndex]({path: 'invalid_file.txt'});
     assert.ok(writer.called);
-    const actual = writer.firstCall.args[firstElementIndex];
+    const actual = writer.firstCall.args[firstIndex];
     assert.deepStrictEqual(actual, {
       errMsg: 'head: invalid_file.txt: No such file or directory',
       headLines: ''
@@ -223,18 +203,17 @@ describe('#filterHeadLines()', () => {
     fileReader.destroy();
   });
 
-  it('should read content from the stdin when no file is given', (done) => {
-    const inputReader = new event.EventEmitter();
-    inputReader.on('close', done);
-    inputReader.destroy = () => { inputReader.emit('close'); };
+  it('should read content from the stdin when no file is given', () => {
     filterHeadLines(inputReader, writer);
-    inputReader.emit('data', 'content');
-    assert.ok(writer.called); const expected = {
+    assert.strictEqual(inputReader.on.firstCall.args[firstIndex], 'data');
+    assert.strictEqual(inputReader.on.secondCall.args[firstIndex], 'error');
+    inputReader.on.firstCall.args[secondIndex]('content');
+    assert.ok(writer.called);
+    const actual = writer.firstCall.args[firstIndex];
+    assert.deepStrictEqual(actual, {
       errMsg: '',
       headLines: 'content'
-    };
-    const actual = writer.firstCall.args[firstElementIndex];
-    assert.deepStrictEqual(actual, expected);
+    });
     inputReader.destroy();
   });
 });
