@@ -41,14 +41,15 @@ const getHeadLines = function (content) {
 };
 
 const filterHeadLines = function (inputStream, writer) {
-  loadContent(inputStream, content => {
+  const contentHandler = function(content) {
     const headLines = getHeadLines(content);
     const headOutcome = {
       errMsg: content.errMsg,
       headLines
     };
     writer(headOutcome);
-  });
+  };
+  loadContent(inputStream, contentHandler);
 };
 
 const getInputStream = function (filename, fileStream, inputStream) {
