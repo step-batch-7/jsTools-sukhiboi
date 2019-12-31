@@ -63,3 +63,4 @@ cat more_than_10_lines.txt | node head.js
 4. add sinon [done]
 5. change all events to sinon.fake. [done]
 6. change return of getHeadLines (function) [done]
+7. rename returnContent to a better name -> onLoadComplete [done]

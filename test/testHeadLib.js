@@ -45,22 +45,22 @@ describe('#getHeadLines()', () => {
 describe('#loadContent()', () => {
   const firstIndex = 0, secondIndex = 1;
   let inputReader;
-  let returnContent;
+  let onLoadComplete;
   let fileReader;
 
   beforeEach(() => {
     fileReader = { on: sinon.spy(), destroy: sinon.spy() };
     inputReader = { on: sinon.spy(), destroy: sinon.spy() };
-    returnContent = sinon.spy();
+    onLoadComplete = sinon.spy();
   });
 
   context('#Reading from stdin', () => {
     it('should read content from stdin', () => {
-      loadContent(inputReader, returnContent);
+      loadContent(inputReader, onLoadComplete);
       assert.strictEqual(inputReader.on.firstCall.args[firstIndex], 'data');
       assert.strictEqual(inputReader.on.secondCall.args[firstIndex], 'error');
       inputReader.on.firstCall.args[secondIndex]('content');
-      assert.ok(returnContent.calledWith({
+      assert.ok(onLoadComplete.calledWith({
         errMsg: '',
         headLines: 'content'
       }));
@@ -68,16 +68,16 @@ describe('#loadContent()', () => {
 
     it('should end after 10 lines if more than 10 lines are given', (done) => {
       const numLimit = 20, expectedCallCount = 10;
-      loadContent(inputReader, returnContent);
+      loadContent(inputReader, onLoadComplete);
       assert.strictEqual(inputReader.on.firstCall.args[firstIndex], 'data');
       assert.strictEqual(inputReader.on.secondCall.args[firstIndex], 'error');
       for (let num = 0; num <= numLimit; num++) {
         if (inputReader.destroy.called) {
-          assert.equal(returnContent.callCount, expectedCallCount);
+          assert.equal(onLoadComplete.callCount, expectedCallCount);
           done();
         }
         inputReader.on.firstCall.args[secondIndex]('content');
-        assert.ok(returnContent.calledWith({
+        assert.ok(onLoadComplete.calledWith({
           errMsg: '',
           headLines: 'content'
         }));
@@ -86,16 +86,16 @@ describe('#loadContent()', () => {
 
     it('should end after 10 lines if only 10 lines are given', (done) => {
       const numLimit = 10, expectedCallCount = 10;
-      loadContent(inputReader, returnContent);
+      loadContent(inputReader, onLoadComplete);
       assert.strictEqual(inputReader.on.firstCall.args[firstIndex], 'data');
       assert.strictEqual(inputReader.on.secondCall.args[firstIndex], 'error');
       for (let num = 0; num <= numLimit; num++) {
         if (inputReader.destroy.called) {
-          assert.equal(returnContent.callCount, expectedCallCount);
+          assert.equal(onLoadComplete.callCount, expectedCallCount);
           done();
         }
         inputReader.on.firstCall.args[secondIndex]('content');
-        assert.ok(returnContent.calledWith({
+        assert.ok(onLoadComplete.calledWith({
           errMsg: '',
           headLines: 'content'
         }));
@@ -106,12 +106,12 @@ describe('#loadContent()', () => {
   context('#Reading from files', () => {
     const firstElementIndex = 0;
     it('should return content of the file', () => {
-      loadContent(fileReader, returnContent);
+      loadContent(fileReader, onLoadComplete);
       assert.strictEqual(fileReader.on.firstCall.args[firstIndex], 'data');
       assert.strictEqual(fileReader.on.secondCall.args[firstIndex], 'error');
       fileReader.on.firstCall.args[secondIndex]('content');
-      assert.ok(returnContent.called);
-      const actual = returnContent.firstCall.args[firstElementIndex];
+      assert.ok(onLoadComplete.called);
+      const actual = onLoadComplete.firstCall.args[firstElementIndex];
       assert.deepStrictEqual(actual, {
         errMsg: '',
         headLines: 'content'
@@ -119,12 +119,12 @@ describe('#loadContent()', () => {
     });
 
     it('should give error when file is not present', () => {
-      loadContent(fileReader, returnContent);
+      loadContent(fileReader, onLoadComplete);
       assert.strictEqual(fileReader.on.firstCall.args[firstIndex], 'data');
       assert.strictEqual(fileReader.on.secondCall.args[firstIndex], 'error');
       fileReader.on.secondCall.args[secondIndex]({ path: 'invalid_file.txt' });
-      assert.ok(returnContent.called);
-      const actual = returnContent.firstCall.args[firstElementIndex];
+      assert.ok(onLoadComplete.called);
+      const actual = onLoadComplete.firstCall.args[firstElementIndex];
       assert.deepStrictEqual(actual, {
         errMsg: 'head: invalid_file.txt: No such file or directory',
         headLines: ''
