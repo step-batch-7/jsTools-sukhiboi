@@ -68,13 +68,13 @@ describe('#loadContent()', () => {
 
   context('#Reading from stdin', () => {
     it('should read content from stdin', (done) => {
-      inputReader.on('end', done);
+      inputReader.on('close', done);
       loadContent(inputReader, returnContent);
       inputReader.emit('data', 'content');
       assert.ok(returnContent.called);
       const actual = returnContent.firstCall.args[firstElementIndex];
       assert.deepStrictEqual(actual, { errMsg: '', headLines: 'content' });
-      inputReader.emit('end');
+      inputReader.destroy();
     });
 
     it('should destroy after 10 lines', (done) => {
@@ -96,13 +96,13 @@ describe('#loadContent()', () => {
     it('should destroy before 10 if control D pressed', (done) => {
       inputReader.on('close', () => {
         const expectedCallCount = 4;
-        assert.strictEqual(returnContent.callCount, expectedCallCount); 
+        assert.strictEqual(returnContent.callCount, expectedCallCount);
         done();
       });
       loadContent(inputReader, returnContent);
       const numLimit = 12, expectedChunks = 4;
       for (let num = 0; num < numLimit; num++) {
-        if(num === expectedChunks) {
+        if (num === expectedChunks) {
           inputReader.destroy();
         }
         inputReader.emit('data', 'content');
@@ -118,7 +118,8 @@ describe('#loadContent()', () => {
     it('should return content of the file', (done) => {
       const filenames = ['only_10_lines.txt'];
       const fileReader = new event.EventEmitter(filenames[firstElementIndex]);
-      fileReader.on('end', done);
+      fileReader.on('close', done);
+      fileReader.destroy = () => { fileReader.emit('close'); };
       loadContent(fileReader, returnContent);
       fileReader.emit('data', 'content');
       assert.ok(returnContent.called);
@@ -127,14 +128,14 @@ describe('#loadContent()', () => {
         errMsg: '',
         headLines: 'content'
       });
-      fileReader.emit('end');
+      fileReader.destroy();
     });
 
     it('should give error when file is not present', (done) => {
       const filenames = ['invalid_file.txt'];
       const fileReader = new event.EventEmitter(filenames[firstElementIndex]);
-      fileReader.destroy = () => { fileReader.emit('close'); done(); };
-      fileReader.on('end', done);
+      fileReader.on('close', done);
+      fileReader.destroy = () => { fileReader.emit('close'); };
       loadContent(fileReader, returnContent);
       fileReader.emit('error', { path: filenames[firstElementIndex] });
       assert.ok(returnContent.called);
@@ -193,38 +194,39 @@ describe('#filterHeadLines()', () => {
   it('should give first head lines of the file', (done) => {
     const args = 'node head.js only_10_lines.txt'.split(' ');
     const fileReader = new event.EventEmitter(args[userArgsIndex]);
-    fileReader.on('end', done);
+    fileReader.on('close', done);
+    fileReader.destroy = () => { fileReader.emit('close'); };
     filterHeadLines(fileReader, writer);
     fileReader.emit('data', 'content');
     assert.ok(writer.called);
-    const expected = {
+    const actual = writer.firstCall.args[firstElementIndex];
+    assert.deepStrictEqual(actual, {
       errMsg: '',
       headLines: 'content'
-    };
-    const actual = writer.firstCall.args[firstElementIndex];
-    assert.deepStrictEqual(actual, expected);
-    fileReader.emit('end');
+    });
+    fileReader.destroy();
   });
 
   it('should give error if file not exists', (done) => {
     const args = 'node head.js invalid_file.txt'.split(' ');
     const fileReader = new event.EventEmitter(args[userArgsIndex]);
-    fileReader.on('end', done);
+    fileReader.on('close', done);
+    fileReader.destroy = () => { fileReader.emit('close'); };
     filterHeadLines(fileReader, writer);
     fileReader.emit('error', { path: args[userArgsIndex] });
     assert.ok(writer.called);
-    const expected = {
+    const actual = writer.firstCall.args[firstElementIndex];
+    assert.deepStrictEqual(actual, {
       errMsg: 'head: invalid_file.txt: No such file or directory',
       headLines: ''
-    };
-    const actual = writer.firstCall.args[firstElementIndex];
-    assert.deepStrictEqual(actual, expected);
-    fileReader.emit('end');
+    });
+    fileReader.destroy();
   });
 
   it('should read content from the stdin when no file is given', (done) => {
     const inputReader = new event.EventEmitter();
-    inputReader.on('end', done);
+    inputReader.on('close', done);
+    inputReader.destroy = () => { inputReader.emit('close'); };
     filterHeadLines(inputReader, writer);
     inputReader.emit('data', 'content');
     assert.ok(writer.called); const expected = {
@@ -233,6 +235,6 @@ describe('#filterHeadLines()', () => {
     };
     const actual = writer.firstCall.args[firstElementIndex];
     assert.deepStrictEqual(actual, expected);
-    inputReader.emit('end');
+    inputReader.destroy();
   });
 });
