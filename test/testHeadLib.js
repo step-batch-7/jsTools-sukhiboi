@@ -1,4 +1,3 @@
-const event = require('events');
 const assert = require('chai').assert;
 const sinon = require('sinon');
 const {
@@ -134,9 +133,11 @@ describe('#getInputStream()', () => {
   const userArgsIndex = 2;
   let fileReader;
   let inputReader;
+  const onSpy = sinon.spy();
+  const destroySpy = sinon.spy();
 
   beforeEach(() => {
-    fileReader = function () { new event.EventEmitter(); };
+    fileReader = function () { return { on: onSpy, destroy: destroySpy }; };
     inputReader = process.stdin;
   });
 
@@ -147,8 +148,7 @@ describe('#getInputStream()', () => {
       inputReader
     };
     const inputStream = getInputStream(args.slice(userArgsIndex), streams);
-    const readStream = streams.fileReader(args[userArgsIndex]);
-    assert.deepStrictEqual(inputStream, readStream);
+    assert.deepStrictEqual(inputStream, { on: onSpy, destroy: destroySpy });
   });
 
   it('should return inputStream when no file is given', () => {
@@ -193,7 +193,7 @@ describe('#filterHeadLines()', () => {
     filterHeadLines(fileReader, writer);
     assert.strictEqual(fileReader.on.firstCall.args[firstIndex], 'data');
     assert.strictEqual(fileReader.on.secondCall.args[firstIndex], 'error');
-    fileReader.on.secondCall.args[secondIndex]({path: 'invalid_file.txt'});
+    fileReader.on.secondCall.args[secondIndex]({ path: 'invalid_file.txt' });
     assert.ok(writer.called);
     const actual = writer.firstCall.args[firstIndex];
     assert.deepStrictEqual(actual, {
