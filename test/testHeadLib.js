@@ -125,7 +125,9 @@ describe('#getInputStream()', () => {
   const destroySpy = sinon.spy();
 
   beforeEach(() => {
-    fileReader = function () { return { on: onSpy, destroy: destroySpy }; };
+    fileReader = function () {
+      return { on: onSpy, destroy: destroySpy };
+    };
     inputReader = process.stdin;
   });
 
