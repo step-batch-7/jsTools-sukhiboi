@@ -51,13 +51,8 @@ const filterHeadLines = function (inputStream, writer) {
   });
 };
 
-const getInputStream = function (filenames, fileStream, inputStream) {
-  const emptyArrayLength = 0;
-  if(filenames.length === emptyArrayLength){
-    return inputStream;
-  }
-  const filename = filenames[emptyArrayLength];
-  return fileStream(filename);
+const getInputStream = function (filename, fileStream, inputStream) {
+  return filename ? fileStream(filename) : inputStream;
 };
 
 module.exports = {

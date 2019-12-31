@@ -136,7 +136,6 @@ describe('#loadContent()', () => {
 });
 
 describe('#getInputStream()', () => {
-  const userArgsIndex = 2;
   let fileReader;
   let inputReader;
   const onSpy = sinon.spy();
@@ -150,16 +149,14 @@ describe('#getInputStream()', () => {
   });
 
   it('should return fs read stream when file is given', () => {
-    const args = 'node head.js only_10_lines.txt'.split(' ');
-    const filenames = args.slice(userArgsIndex);
-    const inputStream = getInputStream(filenames, fileReader, inputReader);
+    const [, , filename] = 'node head.js only_10_lines.txt'.split(' ');
+    const inputStream = getInputStream(filename, fileReader, inputReader);
     assert.deepStrictEqual(inputStream, { on: onSpy, destroy: destroySpy });
   });
 
   it('should return inputStream when no file is given', () => {
-    const args = 'node head.js'.split(' ');
-    const filenames = args.slice(userArgsIndex);
-    const inputStream = getInputStream(filenames, fileReader, inputReader);
+    const [, , filename] = 'node head.js'.split(' ');
+    const inputStream = getInputStream(filename, fileReader, inputReader);
     assert.deepStrictEqual(inputStream, process.stdin);
   });
 });

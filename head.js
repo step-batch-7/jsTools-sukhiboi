@@ -3,9 +3,8 @@ const { stdin, stdout, stderr } = require('process');
 const { filterHeadLines, getInputStream } = require('./src/headLib');
 
 const main = function () {
-  const userArgsIndex = 2;
-  const userArgs = process.argv.slice(userArgsIndex);
-  const inputStream = getInputStream(userArgs, fs.createReadStream, stdin);
+  const [, , filename] = process.argv;
+  const inputStream = getInputStream(filename, fs.createReadStream, stdin);
   filterHeadLines(inputStream, headOutcome => {
     stderr.write(headOutcome.errMsg);
     stdout.write(headOutcome.headLines);
