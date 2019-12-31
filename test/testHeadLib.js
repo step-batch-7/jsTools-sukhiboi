@@ -47,7 +47,7 @@ describe('#loadContent()', () => {
       inputReader.on.firstCall.args[secondIndex]('content');
       assert.ok(onLoadComplete.calledWith({
         errMsg: '',
-        headLines: 'content'
+        lines: 'content'
       }));
     });
 
@@ -64,7 +64,7 @@ describe('#loadContent()', () => {
         inputReader.on.firstCall.args[secondIndex]('content');
         assert.ok(onLoadComplete.calledWith({
           errMsg: '',
-          headLines: 'content'
+          lines: 'content'
         }));
       }
     });
@@ -82,7 +82,7 @@ describe('#loadContent()', () => {
         inputReader.on.firstCall.args[secondIndex]('content');
         assert.ok(onLoadComplete.calledWith({
           errMsg: '',
-          headLines: 'content'
+          lines: 'content'
         }));
       }
     });
@@ -99,7 +99,7 @@ describe('#loadContent()', () => {
       const actual = onLoadComplete.firstCall.args[firstElementIndex];
       assert.deepStrictEqual(actual, {
         errMsg: '',
-        headLines: 'content'
+        lines: 'content'
       });
     });
 
@@ -112,7 +112,7 @@ describe('#loadContent()', () => {
       const actual = onLoadComplete.firstCall.args[firstElementIndex];
       assert.deepStrictEqual(actual, {
         errMsg: 'head: invalid_file.txt: No such file or directory',
-        headLines: ''
+        lines: ''
       });
       assert.ok(fileReader.destroy.called);
     });

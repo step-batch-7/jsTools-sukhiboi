@@ -3,10 +3,10 @@ const generateErrorMsg = function (err) {
   return errMsg;
 };
 
-const formatContent = function (errMsg, headLines) {
+const formatContent = function (errMsg, lines) {
   const formatedContent = {
     errMsg,
-    headLines
+    lines
   };
   return formatedContent;
 };
@@ -41,8 +41,8 @@ const getHeadLines = function (content) {
 };
 
 const filterHeadLines = function (inputStream, writer) {
-  const contentHandler = function(content) {
-    const headLines = getHeadLines(content.headLines);
+  const contentHandler = function (content) {
+    const headLines = getHeadLines(content.lines);
     const headOutcome = {
       errMsg: content.errMsg,
       headLines
