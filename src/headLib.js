@@ -51,12 +51,13 @@ const filterHeadLines = function (inputStream, writer) {
   });
 };
 
-const getInputStream = function (filenames, streams) {
-  const firstElementIndex = 0;
-  if (filenames.length === firstElementIndex) {
-    return streams.inputReader;
+const getInputStream = function (filenames, fileStream, inputStream) {
+  const emptyArrayLength = 0;
+  if(filenames.length === emptyArrayLength){
+    return inputStream;
   }
-  return streams.fileReader(filenames[firstElementIndex]);
+  const filename = filenames[emptyArrayLength];
+  return fileStream(filename);
 };
 
 module.exports = {

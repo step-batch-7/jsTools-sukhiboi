@@ -64,3 +64,5 @@ cat more_than_10_lines.txt | node head.js
 5. change all events to sinon.fake. [done]
 6. change return of getHeadLines (function) [done]
 7. rename returnContent to a better name -> onLoadComplete [done]
+8. Change the arguments getInputStream function [done]
+9. Change array of files to one file in main 
