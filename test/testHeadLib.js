@@ -16,11 +16,7 @@ describe('#getHeadLines()', () => {
     };
     const lineCount = 10;
     const actual = getHeadLines(content, lineCount);
-    const expected = {
-      errMsg: '',
-      headLines: '1234567891'.split('').join('\n')
-    };
-    assert.deepStrictEqual(actual, expected);
+    assert.deepStrictEqual(actual, '1234567891'.split('').join('\n'));
   });
 
   it('should return all lines when content have less than 10 lines', () => {
@@ -31,11 +27,7 @@ describe('#getHeadLines()', () => {
     };
     const lineCount = 10;
     const actual = getHeadLines(content, lineCount);
-    const expected = {
-      errMsg: '',
-      headLines: '12345678'.split('').join('\n')
-    };
-    assert.deepStrictEqual(actual, expected);
+    assert.deepStrictEqual(actual, '12345678'.split('').join('\n'));
   });
 
   it('should return all lines when content have only 10 lines', () => {
@@ -46,11 +38,7 @@ describe('#getHeadLines()', () => {
     };
     const lineCount = 10;
     const actual = getHeadLines(content, lineCount);
-    const expected = {
-      errMsg: '',
-      headLines: '1234567891'.split('').join('\n')
-    };
-    assert.deepStrictEqual(actual, expected);
+    assert.deepStrictEqual(actual, '1234567891'.split('').join('\n'));
   });
 });
 

@@ -25,16 +25,17 @@ const getHeadLines = function (content) {
   const firstIndex = 0;
   const eleventhIndex = 10;
   const headLines = lines.slice(firstIndex, eleventhIndex);
-  return {
-    errMsg: content.errMsg,
-    headLines: headLines.join('\n')
-  };
+  return headLines.join('\n');
 };
 
 const filterHeadLines = function (inputStream, writer) {
   loadContent(inputStream, content => {
     const headLines = getHeadLines(content);
-    writer(headLines);
+    const headOutcome = {
+      errMsg: content.errMsg,
+      headLines
+    };
+    writer(headOutcome);
   });
 };
 
