@@ -33,7 +33,7 @@ const loadContent = function (inputStream, onLoadComplete) {
 };
 
 const getHeadLines = function (content) {
-  const lines = content.headLines.split('\n');
+  const lines = content.split('\n');
   const firstIndex = 0;
   const eleventhIndex = 10;
   const headLines = lines.slice(firstIndex, eleventhIndex);
@@ -42,7 +42,7 @@ const getHeadLines = function (content) {
 
 const filterHeadLines = function (inputStream, writer) {
   const contentHandler = function(content) {
-    const headLines = getHeadLines(content);
+    const headLines = getHeadLines(content.headLines);
     const headOutcome = {
       errMsg: content.errMsg,
       headLines

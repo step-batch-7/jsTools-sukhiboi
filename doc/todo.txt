@@ -66,3 +66,4 @@ cat more_than_10_lines.txt | node head.js
 7. rename returnContent to a better name -> onLoadComplete [done]
 8. Change the arguments getInputStream function [done]
 9. Change array of files to one file in main [done]
+10. Update getHeadLines to take content and give lines [done]

@@ -10,34 +10,19 @@ const {
 describe('#getHeadLines()', () => {
   it('should return first 10 lines if content have more than 10 lines', () => {
     const headLines = '123456789101112'.split('').join('\n');
-    const content = {
-      errMsg: '',
-      headLines
-    };
-    const lineCount = 10;
-    const actual = getHeadLines(content, lineCount);
+    const actual = getHeadLines(headLines);
     assert.deepStrictEqual(actual, '1234567891'.split('').join('\n'));
   });
 
   it('should return all lines when content have less than 10 lines', () => {
     const headLines = '12345678'.split('').join('\n');
-    const content = {
-      errMsg: '',
-      headLines
-    };
-    const lineCount = 10;
-    const actual = getHeadLines(content, lineCount);
+    const actual = getHeadLines(headLines);
     assert.deepStrictEqual(actual, '12345678'.split('').join('\n'));
   });
 
   it('should return all lines when content have only 10 lines', () => {
     const headLines = '1234567891'.split('').join('\n');
-    const content = {
-      errMsg: '',
-      headLines
-    };
-    const lineCount = 10;
-    const actual = getHeadLines(content, lineCount);
+    const actual = getHeadLines(headLines);
     assert.deepStrictEqual(actual, '1234567891'.split('').join('\n'));
   });
 });
