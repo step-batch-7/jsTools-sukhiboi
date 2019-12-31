@@ -4,12 +4,12 @@
   "description": "",
   "main": "head.js",
   "scripts": {
-    "appTest": "./runAppTests.sh appTests/*.test",
-    "mocha": "nyc mocha",
-    "test:web": "nyc --reporter=html mocha && open coverage/index.html",
-    "eslint": "eslint test src head.js",
     "test": "npm run mocha && npm run appTest && npm run eslint",
-    "update:lint": "curl https://raw.githubusercontent.com/blpabhishek/eslintrc-config/master/.eslintrc.json --output .eslintrc.json"
+    "mocha": "nyc mocha",
+    "appTest": "./runAppTests.sh appTests/*.test",
+    "test:web": "nyc --reporter=html mocha && open coverage/index.html",
+    "update:lint": "curl https://raw.githubusercontent.com/blpabhishek/eslintrc-config/master/.eslintrc.json --output .eslintrc.json",
+    "eslint": "eslint test src head.js"
   },
   "author": "",
   "license": "ISC",
