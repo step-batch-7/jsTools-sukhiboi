@@ -63,6 +63,7 @@ describe('#loadContent()', () => {
   beforeEach(() => {
     inputReader = new event.EventEmitter();
     returnContent = sinon.spy();
+    inputReader.destroy = () => inputReader.emit('close');
   });
 
   context('#Reading from stdin', () => {
@@ -76,15 +77,34 @@ describe('#loadContent()', () => {
       inputReader.emit('end');
     });
 
-    it('should pause after 10 lines', (done) => {
-      inputReader.on('end', () => {
+    it('should destroy after 10 lines', (done) => {
+      inputReader.on('close', () => {
         const expectedCallCount = 9;
         assert.strictEqual(returnContent.callCount, expectedCallCount);
         done();
       });
       loadContent(inputReader, returnContent);
-      const numLimit = 12;
-      for (let num = 1; num < numLimit; num++) {
+      const numLimit = 10;
+      for (let num = 0; num < numLimit; num++) {
+        inputReader.emit('data', 'content');
+        assert.ok(returnContent.called);
+        const actual = returnContent.firstCall.args[firstElementIndex];
+        assert.deepStrictEqual(actual, { errMsg: '', headLines: 'content' });
+      }
+    });
+
+    it('should destroy before 10 if control D pressed', (done) => {
+      inputReader.on('close', () => {
+        const expectedCallCount = 4;
+        assert.strictEqual(returnContent.callCount, expectedCallCount); 
+        done();
+      });
+      loadContent(inputReader, returnContent);
+      const numLimit = 12, expectedChunks = 4;
+      for (let num = 0; num < numLimit; num++) {
+        if(num === expectedChunks) {
+          inputReader.destroy();
+        }
         inputReader.emit('data', 'content');
         assert.ok(returnContent.called);
         const actual = returnContent.firstCall.args[firstElementIndex];
@@ -113,6 +133,7 @@ describe('#loadContent()', () => {
     it('should give error when file is not present', (done) => {
       const filenames = ['invalid_file.txt'];
       const fileReader = new event.EventEmitter(filenames[firstElementIndex]);
+      fileReader.destroy = () => { fileReader.emit('close'); done(); };
       fileReader.on('end', done);
       loadContent(fileReader, returnContent);
       fileReader.emit('error', { path: filenames[firstElementIndex] });
@@ -122,7 +143,7 @@ describe('#loadContent()', () => {
         errMsg: 'head: invalid_file.txt: No such file or directory',
         headLines: ''
       });
-      fileReader.emit('end');
+      fileReader.destroy();
     });
 
   });
