@@ -66,12 +66,30 @@ describe('#loadContent()', () => {
       }));
     });
 
-    it('should destroy after 10 lines', (done) => {
-      const numLimit = 11, expectedCallCount = 10;
+    it('should end after 10 lines if more than 10 lines are given', (done) => {
+      const numLimit = 20, expectedCallCount = 10;
       loadContent(inputReader, returnContent);
       assert.strictEqual(inputReader.on.firstCall.args[firstIndex], 'data');
       assert.strictEqual(inputReader.on.secondCall.args[firstIndex], 'error');
-      for (let num = 1; num <= numLimit; num++) {
+      for (let num = 0; num <= numLimit; num++) {
+        if (inputReader.destroy.called) {
+          assert.equal(returnContent.callCount, expectedCallCount);
+          done();
+        }
+        inputReader.on.firstCall.args[secondIndex]('content');
+        assert.ok(returnContent.calledWith({
+          errMsg: '',
+          headLines: 'content'
+        }));
+      }
+    });
+
+    it('should end after 10 lines if only 10 lines are given', (done) => {
+      const numLimit = 10, expectedCallCount = 10;
+      loadContent(inputReader, returnContent);
+      assert.strictEqual(inputReader.on.firstCall.args[firstIndex], 'data');
+      assert.strictEqual(inputReader.on.secondCall.args[firstIndex], 'error');
+      for (let num = 0; num <= numLimit; num++) {
         if (inputReader.destroy.called) {
           assert.equal(returnContent.callCount, expectedCallCount);
           done();

@@ -1,22 +1,32 @@
+const generateErrorMsg = function(err) {
+  const errMsg = `head: ${err.path}: No such file or directory`;
+  return errMsg;
+};
+
+const formatContent = function (errMsg, headLines) {
+  const formatedContent = {
+    errMsg,
+    headLines
+  };
+  return formatedContent;
+};
+
 const loadContent = function (inputStream, returnContent) {
-  let lineCount = 1;
+  let lineCount = 0;
   const defaultLineCount = 10;
   inputStream.on('data', data => {
+    lineCount++;
     if (lineCount === defaultLineCount) {
       inputStream.destroy();
     }
-    lineCount++;
-    returnContent({
-      errMsg: '',
-      headLines: data.toString()
-    });
+    const content = formatContent('', data.toString());
+    returnContent(content);
   });
   inputStream.on('error', err => {
     inputStream.destroy();
-    returnContent({
-      errMsg: `head: ${err.path}: No such file or directory`,
-      headLines: ''
-    });
+    const errMsg = generateErrorMsg(err);
+    const content = formatContent(errMsg, '');
+    returnContent(content);
   });
 };
 
