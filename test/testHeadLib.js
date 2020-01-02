@@ -175,45 +175,55 @@ describe('#filterHeadLines()', () => {
     writer = sinon.spy();
   });
 
-  it('should give first head lines of the file', () => {
-    filterHeadLines(fileReader, writer);
-    assert.strictEqual(fileReader.on.firstCall.args[firstIndex], 'data');
-    assert.strictEqual(fileReader.on.secondCall.args[firstIndex], 'error');
-    fileReader.on.firstCall.args[secondIndex]('content');
-    assert.ok(writer.called);
-    const actual = writer.firstCall.args[firstIndex];
-    assert.deepStrictEqual(actual, {
-      errMsg: '',
-      headLines: 'content'
+  context('#Filtering head lines with files', () => {
+
+    beforeEach(() => {
+      filterHeadLines(fileReader, writer);
+      assert.strictEqual(fileReader.on.firstCall.args[firstIndex], 'data');
+      assert.strictEqual(fileReader.on.secondCall.args[firstIndex], 'error');
     });
-    fileReader.destroy();
+
+    it('should give first head lines of the file', () => {
+      fileReader.on.firstCall.args[secondIndex]('content');
+      assert.ok(writer.called);
+      const actual = writer.firstCall.args[firstIndex];
+      assert.deepStrictEqual(actual, {
+        errMsg: '',
+        headLines: 'content'
+      });
+      fileReader.destroy();
+    });
+
+    it('should give error if file not exists', () => {
+      fileReader.on.secondCall.args[secondIndex]({ path: 'invalid_file.txt' });
+      assert.ok(writer.called);
+      const actual = writer.firstCall.args[firstIndex];
+      assert.deepStrictEqual(actual, {
+        errMsg: 'head: invalid_file.txt: No such file or directory',
+        headLines: ''
+      });
+      fileReader.destroy();
+    });
   });
 
-  it('should give error if file not exists', () => {
-    filterHeadLines(fileReader, writer);
-    assert.strictEqual(fileReader.on.firstCall.args[firstIndex], 'data');
-    assert.strictEqual(fileReader.on.secondCall.args[firstIndex], 'error');
-    fileReader.on.secondCall.args[secondIndex]({ path: 'invalid_file.txt' });
-    assert.ok(writer.called);
-    const actual = writer.firstCall.args[firstIndex];
-    assert.deepStrictEqual(actual, {
-      errMsg: 'head: invalid_file.txt: No such file or directory',
-      headLines: ''
+  context('#Filtering head lines with input stream', () => {
+
+    beforeEach(() => {
+      filterHeadLines(inputReader, writer);
+      assert.strictEqual(inputReader.on.firstCall.args[firstIndex], 'data');
+      assert.strictEqual(inputReader.on.secondCall.args[firstIndex], 'error');
     });
-    fileReader.destroy();
+
+    it('should read content from the stdin when no file is given', () => {
+      inputReader.on.firstCall.args[secondIndex]('content');
+      assert.ok(writer.called);
+      const actual = writer.firstCall.args[firstIndex];
+      assert.deepStrictEqual(actual, {
+        errMsg: '',
+        headLines: 'content'
+      });
+      inputReader.destroy();
+    });
   });
 
-  it('should read content from the stdin when no file is given', () => {
-    filterHeadLines(inputReader, writer);
-    assert.strictEqual(inputReader.on.firstCall.args[firstIndex], 'data');
-    assert.strictEqual(inputReader.on.secondCall.args[firstIndex], 'error');
-    inputReader.on.firstCall.args[secondIndex]('content');
-    assert.ok(writer.called);
-    const actual = writer.firstCall.args[firstIndex];
-    assert.deepStrictEqual(actual, {
-      errMsg: '',
-      headLines: 'content'
-    });
-    inputReader.destroy();
-  });
 });
