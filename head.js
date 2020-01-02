@@ -6,12 +6,12 @@ const main = function () {
   const [, , filename] = process.argv;
   const inputStream = createStream(filename, createReadStream, stdin);
 
-  const logger = function (headOutCome) {
+  const showResult = function (headOutCome) {
     stderr.write(headOutCome.errMsg);
     stdout.write(headOutCome.headLines);
   };
 
-  filterHeadLines(inputStream, logger);
+  filterHeadLines(inputStream, showResult);
 };
 
 main();

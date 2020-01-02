@@ -37,13 +37,13 @@ const getHeadLines = function (content) {
   return headLines.join('\n');
 };
 
-const filterHeadLines = function (inputStream, writer) {
+const filterHeadLines = function (inputStream, showResult) {
   const contentHandler = function (content) {
     const headOutcome = {
       errMsg: content.errMsg,
       headLines: getHeadLines(content.lines)
     };
-    writer(headOutcome);
+    showResult(headOutcome);
   };
   loadContent(inputStream, contentHandler);
 };

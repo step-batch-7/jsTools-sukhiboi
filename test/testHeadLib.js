@@ -167,26 +167,26 @@ describe('#filterHeadLines()', () => {
   const secondIndex = 1;
   let inputReader;
   let fileReader;
-  let writer;
+  let showResult;
 
   beforeEach(() => {
     fileReader = { on: sinon.spy(), destroy: sinon.spy() };
     inputReader = { on: sinon.spy(), destroy: sinon.spy() };
-    writer = sinon.spy();
+    showResult = sinon.spy();
   });
 
   context('#Filtering head lines with files', () => {
 
     beforeEach(() => {
-      filterHeadLines(fileReader, writer);
+      filterHeadLines(fileReader, showResult);
       assert.strictEqual(fileReader.on.firstCall.args[firstIndex], 'data');
       assert.strictEqual(fileReader.on.secondCall.args[firstIndex], 'error');
     });
 
     it('should give first head lines of the file', () => {
       fileReader.on.firstCall.args[secondIndex]('content');
-      assert.ok(writer.called);
-      const actual = writer.firstCall.args[firstIndex];
+      assert.ok(showResult.called);
+      const actual = showResult.firstCall.args[firstIndex];
       assert.deepStrictEqual(actual, {
         errMsg: '',
         headLines: 'content'
@@ -196,8 +196,8 @@ describe('#filterHeadLines()', () => {
 
     it('should give error if file not exists', () => {
       fileReader.on.secondCall.args[secondIndex]({ path: 'invalid_file.txt' });
-      assert.ok(writer.called);
-      const actual = writer.firstCall.args[firstIndex];
+      assert.ok(showResult.called);
+      const actual = showResult.firstCall.args[firstIndex];
       assert.deepStrictEqual(actual, {
         errMsg: 'head: invalid_file.txt: No such file or directory',
         headLines: ''
@@ -209,15 +209,15 @@ describe('#filterHeadLines()', () => {
   context('#Filtering head lines with input stream', () => {
 
     beforeEach(() => {
-      filterHeadLines(inputReader, writer);
+      filterHeadLines(inputReader, showResult);
       assert.strictEqual(inputReader.on.firstCall.args[firstIndex], 'data');
       assert.strictEqual(inputReader.on.secondCall.args[firstIndex], 'error');
     });
 
     it('should read content from the stdin when no file is given', () => {
       inputReader.on.firstCall.args[secondIndex]('content');
-      assert.ok(writer.called);
-      const actual = writer.firstCall.args[firstIndex];
+      assert.ok(showResult.called);
+      const actual = showResult.firstCall.args[firstIndex];
       assert.deepStrictEqual(actual, {
         errMsg: '',
         headLines: 'content'
