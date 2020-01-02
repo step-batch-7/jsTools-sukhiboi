@@ -147,7 +147,7 @@ describe('#createStream()', () => {
       return { on: onSpy, destroy: destroySpy };
     };
     inputReader = function() {
-      return process.stdin;
+      return { on: onSpy, destroy: destroySpy };
     };
   });
 
@@ -160,7 +160,7 @@ describe('#createStream()', () => {
   it('should return inputStream when no file is given', () => {
     const [, , filename] = 'node head.js'.split(' ');
     const stream = createStream(filename, fileReader, inputReader);
-    assert.deepStrictEqual(stream, process.stdin);
+    assert.deepStrictEqual(stream, { on: onSpy, destroy: destroySpy });
   });
 });
 
