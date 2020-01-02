@@ -48,7 +48,7 @@ const filterHeadLines = function (inputStream, writer) {
   loadContent(inputStream, contentHandler);
 };
 
-const getInputStream = function (filename, fileStream, inputStream) {
+const createStream = function (filename, fileStream, inputStream) {
   return filename ? fileStream(filename) : inputStream;
 };
 
@@ -56,5 +56,5 @@ module.exports = {
   filterHeadLines,
   getHeadLines,
   loadContent,
-  getInputStream
+  createStream
 };
