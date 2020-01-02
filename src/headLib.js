@@ -32,18 +32,16 @@ const loadContent = function (inputStream, onLoadComplete) {
 
 const getHeadLines = function (content) {
   const lines = content.split('\n');
-  const firstIndex = 0;
-  const eleventhIndex = 10;
+  const firstIndex = 0, eleventhIndex = 10;
   const headLines = lines.slice(firstIndex, eleventhIndex);
   return headLines.join('\n');
 };
 
 const filterHeadLines = function (inputStream, writer) {
   const contentHandler = function (content) {
-    const headLines = getHeadLines(content.lines);
     const headOutcome = {
       errMsg: content.errMsg,
-      headLines
+      headLines: getHeadLines(content.lines)
     };
     writer(headOutcome);
   };
