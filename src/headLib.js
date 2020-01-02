@@ -28,8 +28,8 @@ const loadContent = function (stream, onLoadComplete) {
 
 const getHeadLines = function (content) {
   const lines = content.split('\n');
-  const firstIndex = 0, eleventhIndex = 10;
-  const headLines = lines.slice(firstIndex, eleventhIndex);
+  const firstIndex = 0, lineCount = 10;
+  const headLines = lines.slice(firstIndex, lineCount);
   return headLines.join('\n');
 };
 
