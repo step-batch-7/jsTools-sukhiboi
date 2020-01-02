@@ -151,14 +151,14 @@ describe('#createStream()', () => {
 
   it('should return fs read stream when file is given', () => {
     const [, , filename] = 'node head.js only_10_lines.txt'.split(' ');
-    const inputStream = createStream(filename, fileReader, inputReader);
-    assert.deepStrictEqual(inputStream, { on: onSpy, destroy: destroySpy });
+    const stream = createStream(filename, fileReader, inputReader);
+    assert.deepStrictEqual(stream, { on: onSpy, destroy: destroySpy });
   });
 
   it('should return inputStream when no file is given', () => {
     const [, , filename] = 'node head.js'.split(' ');
-    const inputStream = createStream(filename, fileReader, inputReader);
-    assert.deepStrictEqual(inputStream, process.stdin);
+    const stream = createStream(filename, fileReader, inputReader);
+    assert.deepStrictEqual(stream, process.stdin);
   });
 });
 

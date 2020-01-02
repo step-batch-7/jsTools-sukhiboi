@@ -9,21 +9,21 @@ const formatContent = function (errMsg, lines) {
   };
 };
 
-const loadContent = function (inputStream, onLoadComplete) {
+const loadContent = function (stream, onLoadComplete) {
   let lineCount = 0;
   const defaultLineCount = 9;
 
-  inputStream.on('data', data => {
+  stream.on('data', data => {
     if (lineCount === defaultLineCount) {
-      inputStream.destroy();
+      stream.destroy();
     }
     lineCount++;
     const content = formatContent('', data.toString());
     onLoadComplete(content);
   });
 
-  inputStream.on('error', err => {
-    inputStream.destroy();
+  stream.on('error', err => {
+    stream.destroy();
     const errMsg = generateErrorMsg(err);
     const content = formatContent(errMsg, '');
     onLoadComplete(content);
@@ -37,7 +37,7 @@ const getHeadLines = function (content) {
   return headLines.join('\n');
 };
 
-const filterHeadLines = function (inputStream, showResult) {
+const filterHeadLines = function (stream, showResult) {
   const contentHandler = function (content) {
     const headOutcome = {
       errMsg: content.errMsg,
@@ -45,7 +45,7 @@ const filterHeadLines = function (inputStream, showResult) {
     };
     showResult(headOutcome);
   };
-  loadContent(inputStream, contentHandler);
+  loadContent(stream, contentHandler);
 };
 
 const createStream = function (filename, fileStream, inputStream) {
