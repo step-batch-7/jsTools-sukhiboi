@@ -23,7 +23,6 @@ const loadContent = function (stream, onLoadComplete) {
   });
 
   stream.on('error', err => {
-    stream.destroy();
     const errMsg = generateErrorMsg(err);
     const content = formatContent(errMsg, '');
     onLoadComplete(content);

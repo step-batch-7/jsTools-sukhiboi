@@ -130,7 +130,6 @@ describe('#loadContent()', () => {
         errMsg: 'head: invalid_file.txt: No such file or directory',
         lines: ''
       });
-      assert.ok(fileReader.destroy.called);
     });
 
   });
