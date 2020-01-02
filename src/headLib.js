@@ -13,13 +13,13 @@ const formatContent = function (errMsg, lines) {
 
 const loadContent = function (inputStream, onLoadComplete) {
   let lineCount = 0;
-  const defaultLineCount = 10;
+  const defaultLineCount = 9;
 
   inputStream.on('data', data => {
-    lineCount++;
     if (lineCount === defaultLineCount) {
       inputStream.destroy();
     }
+    lineCount++;
     const content = formatContent('', data.toString());
     onLoadComplete(content);
   });
