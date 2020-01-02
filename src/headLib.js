@@ -1,14 +1,12 @@
 const generateErrorMsg = function (err) {
-  const errMsg = `head: ${err.path}: No such file or directory`;
-  return errMsg;
+  return `head: ${err.path}: No such file or directory`;
 };
 
 const formatContent = function (errMsg, lines) {
-  const formatedContent = {
+  return {
     errMsg,
     lines
   };
-  return formatedContent;
 };
 
 const loadContent = function (inputStream, onLoadComplete) {
