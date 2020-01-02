@@ -3,10 +3,7 @@ const generateErrorMsg = function (err) {
 };
 
 const formatContent = function (errMsg, lines) {
-  return {
-    errMsg,
-    lines
-  };
+  return { errMsg, lines };
 };
 
 const loadContent = function (stream, onLoadComplete) {
