@@ -19,7 +19,7 @@ Functions:
   1 filterHeadLines
   2 getHeadLines
   3 loadContent
-  4 getInputStream
+  4 createStream
 
 ------------------------------
 
@@ -33,7 +33,7 @@ Functions:
       headLines: '1\n2\n3\n4\n5\n6\n7\n8\n9\n1'
     }
 	
-  Input => stream: inputStream, callback: writer
+  Input => stream: inputStream, callback: showResult
 		fileReader('only_10_lines.txt'),
 	
   Name => filterHeadLines
@@ -48,8 +48,8 @@ Functions:
       headLines: ''
     }
 	
-  Input => stream: inputStream, callback: writer
-		fileReader('only_10_lines.txt'),
+  Input => stream: fileStream, callback: showResult
+		fileStream('invalid_file.txt'),
 	
   Name => filterHeadLines
 
@@ -63,8 +63,8 @@ Functions:
       headLines: 'content'
     }
 	
-  Input => stream: inputStream, callback: writer
-		fileReader('only_10_lines.txt'),
+  Input => stream: inputStream, callback: showResult
+		inputStream,
 	
   Name => filterHeadLines
 
@@ -72,17 +72,11 @@ Functions:
 
 [1.2] (Step to get head lines of the given content)
 
-  Output => object: headOutcome
-  {
-    errMsg: '',
+  Output => string: headLines
     headLines: '1\n2\n3\n4\n5\n6\n7\n8\n9\n1'
-  }
 
-  Input => object: content
-  {
-    errMsg: '',
+  Input => string: content
     headLines: '1\n2\n3\n4\n5\n6\n7\n8\n9\n1\n0\n1\n1'
-  }
 	
   Name => getHeadLines
 
@@ -93,7 +87,7 @@ Functions:
   Output => object: content
   {
     errMsg: '',
-    headLines: 'content'
+    lines: 'content'
   }
 	
   Input => stream: inputStream, callback: returnContent
@@ -109,7 +103,7 @@ Functions:
   Output => object: content
   {
     errMsg: 'head: invalid_file.txt: No such file or directory',
-    headLines: ''
+    lines: ''
   }
 	
   Input => stream: inputStream, callback: returnContent
@@ -125,7 +119,7 @@ Functions:
   Output => object: content
   {
     errMsg: '',
-    headLines: 'content'
+    lines: 'content'
   }
 	
   Input => stream: inputStream, callback: returnContent
@@ -139,29 +133,21 @@ Functions:
 
 [1.4a] (Step to get file stream)
   
-  Output => stream: fileReader
-    fs.createReadableStream(filename)
+  Output => stream: fileStream
+    fs.createReadableStream('only_10_lines.txt')
 
-  Input => array of strings: filenames, object: streams
-    ['only_10_lines.txt'],
-    {
-      fileReader: fs.createReadableStream,
-      inputReader: process.stdin
-    }
+  Input => array of strings: filenames, function: createFileStream, function: createInputStream
+    'only_10_lines.txt', fs.createReadableStream, process.stdin
 
-  Name => getInputStream
+  Name => createStream
 
 
 [1.4b] (Step to get input stream)
 
-  Output => stream: inputReader
+  Output => stream: inputStream
     process.stdin
   
-  Input => array of strings: filenames, object: streams
-    [],
-    {
-      fileReader: fs.createReadableStream,
-      inputReader: process.stdin
-    }
+  Input => array of strings: filenames, function: createFileStream, function: createInputStream
+    undefined, fs.createReadableStream, process.stdin
   
-  Name => getInputStream
+  Name => createStream
