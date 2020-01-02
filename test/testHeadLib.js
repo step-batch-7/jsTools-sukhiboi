@@ -146,7 +146,9 @@ describe('#createStream()', () => {
     fileReader = function () {
       return { on: onSpy, destroy: destroySpy };
     };
-    inputReader = process.stdin;
+    inputReader = function() {
+      return process.stdin;
+    };
   });
 
   it('should return fs read stream when file is given', () => {

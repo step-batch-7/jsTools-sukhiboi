@@ -4,7 +4,10 @@ const { filterHeadLines, createStream } = require('./src/headLib');
 
 const main = function () {
   const [, , filename] = process.argv;
-  const stream = createStream(filename, createReadStream, stdin);
+  const createInputStream = function() {
+    return stdin;
+  };
+  const stream = createStream(filename, createReadStream, createInputStream);
 
   const showResult = function (headOutCome) {
     stderr.write(headOutCome.errMsg);

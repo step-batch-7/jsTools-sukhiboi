@@ -48,8 +48,8 @@ const filterHeadLines = function (stream, showResult) {
   loadContent(stream, contentHandler);
 };
 
-const createStream = function (filename, fileStream, inputStream) {
-  return filename ? fileStream(filename) : inputStream;
+const createStream = function (filename, CreateFileStream, CreateInputStream) {
+  return filename ? CreateFileStream(filename) : CreateInputStream();
 };
 
 module.exports = {
