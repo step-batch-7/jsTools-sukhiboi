@@ -105,14 +105,17 @@ describe('#loadContent()', () => {
   });
 
   context('#Reading from files', () => {
-    const firstElementIndex = 0;
-    it('should return content of the file', () => {
+
+    beforeEach(() => {
       loadContent(fileReader, onLoadComplete);
       assert.strictEqual(fileReader.on.firstCall.args[firstIndex], 'data');
       assert.strictEqual(fileReader.on.secondCall.args[firstIndex], 'error');
+    });
+
+    it('should return content of the file', () => {
       fileReader.on.firstCall.args[secondIndex]('content');
       assert.ok(onLoadComplete.called);
-      const actual = onLoadComplete.firstCall.args[firstElementIndex];
+      const [actual] = onLoadComplete.firstCall.args;
       assert.deepStrictEqual(actual, {
         errMsg: '',
         lines: 'content'
@@ -120,12 +123,9 @@ describe('#loadContent()', () => {
     });
 
     it('should give error when file is not present', () => {
-      loadContent(fileReader, onLoadComplete);
-      assert.strictEqual(fileReader.on.firstCall.args[firstIndex], 'data');
-      assert.strictEqual(fileReader.on.secondCall.args[firstIndex], 'error');
       fileReader.on.secondCall.args[secondIndex]({ path: 'invalid_file.txt' });
       assert.ok(onLoadComplete.called);
-      const actual = onLoadComplete.firstCall.args[firstElementIndex];
+      const [actual] = onLoadComplete.firstCall.args;
       assert.deepStrictEqual(actual, {
         errMsg: 'head: invalid_file.txt: No such file or directory',
         lines: ''
