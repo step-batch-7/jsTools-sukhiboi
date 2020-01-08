@@ -14,9 +14,9 @@ const loadContent = function (stream, onLoadComplete) {
     if (lineCount === defaultLineCount) {
       stream.destroy();
     }
-    lineCount++;
     const content = formatContent('', data.toString());
     onLoadComplete(content);
+    lineCount++;
   });
 
   stream.on('error', err => {

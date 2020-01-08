@@ -14,13 +14,13 @@ describe('#getHeadLines()', () => {
     assert.deepStrictEqual(actual, '1234567891'.split('').join('\n'));
   });
 
-  it('should return all lines when content have less than 10 lines', () => {
+  it('should return all lines when content has less than 10 lines', () => {
     const headLines = '12345678'.split('').join('\n');
     const actual = getHeadLines(headLines);
     assert.deepStrictEqual(actual, '12345678'.split('').join('\n'));
   });
 
-  it('should return all lines when content have only 10 lines', () => {
+  it('should return all lines when content has only 10 lines', () => {
     const headLines = '1234567891'.split('').join('\n');
     const actual = getHeadLines(headLines);
     assert.deepStrictEqual(actual, '1234567891'.split('').join('\n'));
@@ -145,7 +145,7 @@ describe('#createStream()', () => {
     fileReader = function () {
       return { on: onSpy, destroy: destroySpy };
     };
-    inputReader = function() {
+    inputReader = function () {
       return { on: onSpy, destroy: destroySpy };
     };
   });
